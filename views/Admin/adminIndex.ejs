@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>End game || Admin</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/adminBootstrap.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/AdminHome.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <%- include('adminHeader') %>
+
+
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-line fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Orders</p>
+                            <h6 class="mb-0">
+                                <%= order.count  %>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Sales </p>
+                            <h6 class="mb-0">
+                                <%= order.average +' %' %>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-area fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Today Revenue</p>
+                            <h6 class="mb-0">
+                                <%= order.total %> /-
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2">Total Sold</p>
+                            <h6 class="mb-0">
+                                <%= order.products %> Products
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sale & Revenue End -->
+
+
+            <!-- Sales Chart Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Today Sales</h6>
+                                <a href="/admin/daily" class="btn btn-danger p-2 px-5" download="daily_sales_report.pdf">Download PDF</a>
+                            </div>
+                            <canvas id="dailyChart">
+
+                            </canvas>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Weekly Sales</h6>
+                                <a href="/admin/weekly" class="btn btn-danger p-2 px-5" download="weekly_sales_report.pdf">Download PDF</a>
+                            </div>
+                            <canvas id="weeklyChart">
+
+                            </canvas>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Monthly Sales</h6>
+                                <a href="/admin/monthly"class="btn btn-danger p-2 px-5" download="monthly_sales_report.pdf">Download PDF</a>
+                            </div>
+                            <canvas id="myChart">
+
+                            </canvas>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Yearly Sales</h6>
+                                <a href="/admin/yearly" class="btn btn-danger p-2 px-5" download="yearly_sales_report.pdf">Download PDF</a>
+                            </div>
+                            <canvas id="yearlyChart">
+
+
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sales Chart End -->
+
+
+            <!-- Recent Sales Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-secondary text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">Recent Salse</h6>
+                        <a href="">Show All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-secondary rounded-top p-4">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">
+                            &copy; <a href="#">Its the Endgame</a>, All Right Reserved.
+                        </div>
+                        <div class="col-12 col-sm-6 text-center text-sm-end">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                function decodeHtmlEntities(text) {
+                    var textArea = document.createElement('textarea');
+                    textArea.innerHTML = text;
+                    return textArea.value;
+                }
+
+                const ordersString = '<%= JSON.stringify(month) %>';
+                const orders = JSON.parse(decodeHtmlEntities(ordersString));
+                const ctx = document.getElementById('myChart');
+                console.log(orders);
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Orders', 'Users', 'Products'],
+                        datasets: [{
+                            data: [orders.count, orders.users, orders.totalproducts],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                const yearlyString = '<%= JSON.stringify(yearly) %>';
+                const yearly = JSON.parse(decodeHtmlEntities(yearlyString));
+                const chart = document.getElementById('yearlyChart');
+
+                new Chart(chart, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Orders', 'Users', 'Products'],
+                        datasets: [{
+                            data: [yearly.count, yearly.users, yearly.totalproducts],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                })
+
+                const dailyString = '<%= JSON.stringify(order) %>';
+                const dailyOrders = JSON.parse(decodeHtmlEntities(dailyString));
+                const daily = document.getElementById('dailyChart');
+
+                new Chart(daily, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Orders', 'Users', 'Products'],
+                        datasets: [{
+                            data: [dailyOrders.count, dailyOrders.users, dailyOrders.totalproducts],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+
+                });
+                const weeklyString = '<%= JSON.stringify(Weekly) %>';
+                const weekly = JSON.parse(decodeHtmlEntities(weeklyString));
+                const week = document.getElementById('weeklyChart');
+
+                new Chart(week, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Orders', 'Users', 'Products'],
+                        datasets: [{
+                            data: [weekly.count, weekly.users, weekly.totalproducts],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                })
+            });
+        </script>
+
+        <!-- JavaScript Libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="js/adminFrontend.js"></script>
+</body>
+
+</html>

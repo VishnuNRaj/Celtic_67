@@ -1,0 +1,194 @@
+<%- include('userNavbar') %>
+  <!-- ***** Header Area End ***** -->
+
+
+
+          <!-- ***** Featured Games End ***** -->
+
+          <!-- ***** Start Stream Start ***** -->
+          <% if (search===false) { %>
+            
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="page-content">
+
+          <!-- ***** Featured Games Start ***** -->
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="featured-games header-text">
+                <div class="heading-section">
+                  <h4><em>Featured</em> Games</h4>
+                </div>
+                <div class="owl-features owl-carousel">
+                  <% games.forEach(function(game,index) { %>
+                    <% let j = 1 %>
+                    <% if (game.visible === true && j < 5) { %>
+                      <div class="item" onclick="goToDetails('<%= game._id %>')">
+                        <div class="thumb">
+                          <img src="<%= game.poster %>" style="width: 180px; height: 240px;" alt="">
+                          <div class="hover-effect">
+                            <h6>
+                              <%= game.genre %>
+                            </h6>
+                          </div>
+                        </div>
+                        <h4>
+                          <%= game.name %><br><span>
+                              <%= game.downloads %> Downloads
+                            </span>
+                        </h4>
+                      </div>
+                      <% j++ %>
+                      <% } %>
+                        <% }) %>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="top-downloaded">
+                <div class="heading-section">
+                  <h4><em>Top</em>Genres</h4>
+                </div>
+                <% genres.forEach(function (game) { %>
+                  <% if(game.gamesInTotal>0 && game.visible === true) { %>
+                    <ul>
+                      <li>
+                        <button style="background: transparent; border: 0;" onclick="genreSearch('<%= game._id %>')"><span><i class="fa fa-search" style="color: yellow;"></i>
+                          <%= game.genre %> (<%= game.gamesInTotal %>)
+                        </span></button>
+                      </li>
+                    </ul>
+                    <% } %>
+                      <% }) %>
+                        <div class="text-button">
+                          <button style="background: transparent; color: red; border: 0;" onclick="viewGames()"
+                            id="viewAllGames">View All Games</button>
+                        </div>
+              </div>
+            </div>
+          </div>
+
+          
+            <div class="start-stream" id="liveStream" style="display: none;">
+              <div class="col-lg-12">
+                <div class="heading-section">
+                  <h4><em>All games </em>Available</h4>
+                </div>
+                <div class="row">
+                  <% games.forEach(function(game) { %>
+                    <% if(game.visible === true) { %>
+                      <div class="col-lg-4" style="margin-top: 20px;" onclick="goToDetails('<%= game._id %>')">
+                        <div class="item" style="float: left; width: 100%; height: 100%; ">
+                          <div class="icon">
+                            <img src="<%= game.poster %>" alt="" style="width: 100px; height: 150px; border-radius: 50%;">
+                          </div>
+                          <h4>
+                            <%= game.name %>
+                          </h4>
+                          <p class="detailsTag">
+                            <%= game.genre %>
+                          </p>
+                          <p class="detailsTag">
+                            <%= game.description.production %>
+                          </p>
+                          <p class="detailsTag">
+                            <%= game.price %> /-
+                          </p>
+                        </div>
+                      </div>
+                      
+                    <% } %>
+                    <% }) %>
+                </div>
+              </div>
+            </div>
+            <% } else if (search === true) { %>
+              <div class="start-stream" id="liveStream" style="display: block; margin-top: 10%;">
+                <div class="col-lg-12">
+                  <div class="heading-section">
+                    <h4><em><%= tagline[0] %> </em><%= tagline[1] %></h4>
+                  </div>
+                  <div class="row">
+                    <% games.forEach(function(game) { %>
+                      <% if(game.visible === true) { %>
+                        <div class="col-lg-4" style="margin-top: 20px;" onclick="goToDetails('<%= game._id %>')">
+                          <div class="item" style="float: left; width: 100%; height: 100%; ">
+                            <div class="icon">
+                              <img src="<%= game.poster %>" alt="" style="width: 100px; height: 150px; border-radius: 50%;">
+                            </div>
+                            <h4>
+                              <%= game.name %>
+                            </h4>
+                            <p class="detailsTag">
+                              <%= game.genre %>
+                            </p>
+                            <p class="detailsTag">
+                              <%= game.description.production %>
+                            </p>
+                            <p class="detailsTag">
+                              <%= game.price %> /-
+                            </p>
+                          </div>
+                        </div>  
+                      <% } %>
+                      <% }) %>
+                  </div>
+                </div>
+              </div>
+            
+              <% } %>
+
+
+              <!-- <div class="col-lg-12">
+                  <div class="main-button">
+                    <% if (Name !=="" ) { %>
+                      <a href="/profile">Go toProfile</a>
+                      <% } else { %>
+                        <a href="/login">Go the Profile</a>
+                        <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+              <!-- ***** Start Stream End ***** -->
+
+              <!-- ***** Live Stream Start ***** -->
+
+
+              <footer>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <p>Copyright © 2036. All rights reserved.
+                    </div>
+                  </div>
+                </div>
+              </footer>
+
+
+              <style>
+                .detailsTag {
+                  color: white;
+                  font-size: 16px;
+                }
+              </style>
+
+
+              <!-- Scripts -->
+              <!-- Bootstrap core JavaScript -->
+              <script src="/js/jquery.min.js"></script>
+              <script src="/js/bootstrap.min.js"></script>
+
+              <script src="/js/isotope.min.js"></script>
+              <script src="/js/owl-carousel.js"></script>
+              <script src="/js/tabs.js"></script>
+              <script src="/js/popup.js"></script>
+              <script src="/js/custom.js"></script>
+              <script src="/js/gamesJs.js"></script>
+
+
+              </body>
+
+              </html>

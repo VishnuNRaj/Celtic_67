@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <title>EndGame the GamerStore || Games</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Bootstrap core CSS -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+  <!-- Additional CSS Files -->
+  <link rel="stylesheet" href="/css/cart.css">
+  <link rel="stylesheet" href="/css/templatemo-cyborg-gaming.css">
+  <link rel="stylesheet" href="/css/owl.css">
+  <link rel="stylesheet" href="/css/animate.css">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+  <!--
+
+TemplateMo 579 Cyborg Gaming
+
+https://templatemo.com/tm-579-cyborg-gaming
+
+-->
+</head>
+
+<body>
+
+  <!-- ***** Preloader Start ***** -->
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+  <div class="video-container" style="width:100%; height: 100vh; object-fit: cover; z-index: -1; position: absolute;">
+    <img src="<%= games.image[0] %>" style="width:100%; height: 100%; opacity: 50%;  object-fit: cover;" alt="">
+  </div>
+  <div class="carouselbar">
+    <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="3000"
+      style="width: 100%;">
+      <div class="carousel-inner">
+        <div class="carousel-item active" id="Img1">
+          <img class="d-block w-100" src="<%= games.image[0] %>" style="height: 290px; width: auto;" alt="First slide">
+        </div>
+        <div class="carousel-item" id="Img2">
+          <img class="d-block w-100" src="<%= games.image[1] %>" style="height: 290px; width: auto;" alt="Second slide">
+        </div>
+        <div class="carousel-item" id="Img3">
+          <img class="d-block w-100" src="<%= games.image[2] %>" style="height: 290px; width: auto;" alt="Third slide">
+        </div>
+        <div class="carousel-item" id="Img4">
+          <img class="d-block w-100" src="<%= games.image[3] %>" style="height: 290px; width: auto;" alt="Third slide">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="detailsbar">
+    <div id="wishlist">
+      <button class="wishlistButton" onclick="addtoWishlist('<%= userId %>','<%= games._id %>')"
+        style="width: auto; background: transparent; padding: 10px; float: left; border-radius: 10px;">
+        <center>
+          <% if(already===true) { %>
+            <i class="fa fa-heart" id="heartIcon" style="color: red;"></i>
+            <% } else if (already===false) { %>
+              <i class="fa fa-heart" id="heartIcon" style="color: white;"></i>
+              <% } %>
+        </center>
+      </button>
+    </div>
+    <center>
+      <span class="nameSpan">Name : <%= games.name %></span><br>
+      <span class="nameSpan">Genre : <%= games.genre %>, <%= games.description.restriction %></span><br>
+      <span class="nameSpan">Developed by : <%= games.description.production %></span><br>
+      <span class="nameSpan">Released on : <%= games.description.release %></span><br>
+      <span class="nameSpan">Price : <%= games.price %> /-</span><br>
+      <span class="nameSpan">Downloads : <%= games.downloads %></span><br>
+
+    </center>
+  </div>
+
+  <div class="requirementsBar" style="border: 0;">
+    <center>
+      <span class="headings">Minimum Requirements</span><br>
+      <span class="nameSpan">RAM : <%= games.description.minimumRequirements.ram %></span><br>
+      <span class="nameSpan">Storage : <%= games.description.minimumRequirements.storage %></span><br>
+      <span class="nameSpan">Processor : <%= games.description.minimumRequirements.processor %></span><br>
+      <span class="nameSpan">Graphics : <%= games.description.minimumRequirements.gpu %></span><br>
+    </center>
+  </div>
+  <div class="aboutBar">
+    <center>
+      <span class="headings">About</span><br>
+    </center>
+    <span class="nameSpan" style="font-size: 18px;">
+      <%= games.about %>
+    </span>
+  </div>
+
+  <div class="optionsBar">
+    <div class="btnSection">
+      <button class="optionsButton1" onclick="addtoCart('<%= userId %>','<%= games._id %>')">
+        <center id="cartBtn">
+          <%= (cart===true)?'Go to Cart' : 'Add-to Cart' %>
+        </center>
+      </button>
+    </div>
+    <div class="btnSection" id="typicalButton">
+      <button class="optionsButton2" onclick="buyNow('<%= games._id %>','<%= userId %>',1,'single')">
+        <center>
+          Buy Now
+        </center>
+      </button>
+    </div>
+    <div class="btnSection" id="typicalButton">
+      <button class="optionsButton3">
+        <center>
+          Browse More
+        </center>
+      </button>
+    </div>
+  </div>
+
+  <style>
+    
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="/js/jquery.min.js"></script>
+
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/isotope.min.js"></script>
+  <script src="/js/owl-carousel.js"></script>
+  <script src="/js/tabs.js"></script>
+  <script src="/js/popup.js"></script>
+  <script src="/js/custom.js"></script>
+  <script src="/js/gamesJs.js"></script>
+  <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+  <script>
+    let Img1 = document.getElementById('Img1')
+    let Img2 = document.getElementById('Img2')
+    let Img3 = document.getElementById('Img3')
+    let Img4 = document.getElementById('Img4')
+
+    setInterval(function Carousel() {
+      if (Img1.className == "carousel-item active") {
+        Img2.className = "carousel-item active"
+        Img1.className = "carousel-item"
+      }
+      else if (Img2.className == "carousel-item active") {
+        Img3.className = "carousel-item active"
+        Img2.className = "carousel-item"
+      }
+      else if (Img3.className == "carousel-item active") {
+        Img4.className = "carousel-item active"
+        Img3.className = "carousel-item"
+      } else if (Img4.className == "carousel-item active") {
+        Img1.className = "carousel-item active"
+        Img4.className = "carousel-item"
+      }
+    }, 3000)
+  </script>
+
+</body>
+
+</html>

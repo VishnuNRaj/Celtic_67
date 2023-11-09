@@ -1,0 +1,247 @@
+<%- include('adminHeader') %>
+  <div class="container-fluid">
+    <h1 style="margin-left: 5%; margin-top: 3%; color: red; float: left;">Manage Coupons</h1>
+  </div>
+  <button type="button" data-toggle="modal" data-target="#exampleModal" id="GoToAddProduct">Create Coupon</button>
+
+
+
+
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+        <div class="modal-body">
+          <div class="container-fluid">
+            <h1 style="margin-left: 5%; margin-top: 3%; color: red; float: left;">Create New Coupons</h1>
+          </div><br>
+          <p style="color: red; font-size: 18px;" id="errorBox"></p>
+          <form action="/admin/newCoupon" method="post" id="couponForm" onsubmit="return false">
+            <label for="Name">Enter Coupon Code</label>
+            <input type="text" class="form-control" value="" style="color: white;" name="name" id="nameBox" required
+              placeholder="Enter Coupon Code Name">
+            <label for="Validity">Enter Coupon Validity</label>
+            <input type="date" class="form-control" value="" style="color: white;" name="validity" id="dateBox"
+              required>
+            <label for="">Coupon Usable for</label>
+            <select id="madeFor" name="madeFor" style="background-color: black; color: aqua;" onchange="showInput()"
+              class="form-control">
+              <option value="All" style="color: white;">All</option>
+              <% categorys.forEach( function (category) { %>
+                <option value="<%= category.genre %>" style="color: white;">
+                  <%= category.genre %>
+                </option>
+                <% }) %>
+            </select>
+            <label for="Deduction">Select Deduction Type</label>
+            <select id="deductionType" style="background-color: black; color: aqua;" onchange="showInput()"
+              class="form-control">
+              <option value="none" style="color: white;">None</option>
+              <option value="Percentage" style="color: white;">Percentage</option>
+            </select>
+            <div id="perceBox">
+              <label for="">Discount Percentage</label>
+              <input type="text" class="form-control" value="" style="color: white;" name="deduction" id="deduction"
+                placeholder="Enter Discount Percentage">
+              <label for="">Starting Price</label>
+              <input type="number" class="form-control" value="" style="color: white;" name="validFrom" id="validFrom"
+                placeholder="Enter Starting Price">
+            </div>
+            <label for="">Description</label>
+            <textarea name="description" id="description" class="form-control" style="color: white;" cols="30" rows="5"
+              required>
+
+            </textarea>
+            <center>
+              <button class="btn btn-success w-50 my-3" type="submit">Create</button>
+            </center>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container-fluid">
+    <table class="table table-bordered"
+      style="width: 90%; margin-left: 5%; margin-top: 50px; border: 1px solid #333; background-color: white;">
+      <thead>
+        <tr>
+          <th class="Thead">
+            <center>Sl No</center>
+          </th>
+          <th class="Thead">
+            <center>Coupon</center>
+          </th>
+          <th class="Thead">
+            <center>Validity</center>
+          </th>
+          <th class="Thead">
+            <center>
+              Categorized
+            </center>
+          </th>
+          <th class="Thead">
+            <center>Avail From</center>
+          </th>
+          <th class="Thead">
+            <center>
+              Discount
+            </center>
+          </th>
+          <th class="Thead">
+            <center>
+              Options
+            </center>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let SLNo=1 %>
+          <% coupons.forEach( function (coupon) { %>
+            <tr id="data_<%= coupon._id %>">
+              <td class="Thead">
+                <center>
+                  <%= SLNo %>
+                </center>
+              </td>
+              <td class="Thead" style="width: auto;">
+                <center>
+                  <input type="text" class="border-0" style="font-weight: 600;" name="name" id="name_<%= coupon._id %>"
+                    value="<%= coupon.name %>" required>
+                </center>
+              </td>
+              <td class="Thead">
+                <center>
+                  <input type="date" class="border-0" style="font-weight: 600;" name="validity"
+                    id="validity_<%= coupon._id %>" value="<%= coupon.validity %>" required>
+                </center>
+              </td>
+              <td class="Thead">
+                <center>
+                  <select id="madeFor_<%= coupon._id %>" name="madeFor" required>
+                    <option value="<%= coupon.madeFor %>">
+                      <%= coupon.madeFor %>
+                    </option>
+                    <% categorys.forEach( function (category) { %>
+                      <option value="<%= category.genre %>">
+                        <%= category.genre %>
+                      </option>
+                      <% }) %>
+                  </select>
+                </center>
+              </td>
+              <td class="Thead w-auto" style=" width: 100%;">
+                <center>
+                  <input type="text" class="border-0" style="font-weight: 600; width: 100%;" name="validFrom"
+                    id="validFrom_<%= coupon._id %>" value="<%= coupon.validFrom %>" required>
+                </center>
+              </td>
+              <td class="Thead" style=" width: 20%;">
+                <center>
+                  <input type="text" class="border-0" style="font-weight: 600; width: 60%;" name="deduction"
+                    id="deduction_<%= coupon._id %>" value="<%= coupon.deduction %>" required>
+                </center>
+              </td>
+              <td class="Thead" style="width: 100%;">
+                <center>
+                  <button class="btn btn-success " type="button" onclick="updateForm('<%= coupon._id %>')"><i
+                      class="fa fa-edit"></i></button>
+                  <button class="btn btn-danger" type="button" onclick="deleteCoupon('<%= coupon._id %>')"><i
+                      class="fa fa-trash"></i></button>
+                </center>
+              </td>
+            </tr>
+            <% SLNo++ %>
+              <% }); %>
+
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+  <style>
+    label {
+      margin-top: 20px;
+      color: black;
+      font-weight: 600;
+    }
+
+    .form-control::placeholder {
+      color: aqua;
+    }
+
+    #priceBox {
+      display: none;
+    }
+
+    #perceBox {
+      display: none;
+    }
+
+    #show {
+      display: none;
+    }
+  </style>
+  <script>
+    document.getElementById('couponForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      let name = document.getElementById('nameBox').value;
+      let validity = document.getElementById('dateBox').value;
+      let errorBox = document.getElementById('errorBox');
+
+      if (name != "") {
+        if (dateValidation(validity)) {
+          if (document.getElementById('madeFor') && document.getElementById('validFrom') &&
+            document.getElementById('deduction') && document.getElementById('description')) {
+
+            const result = await Swal.fire({
+              title: 'Do you want to create new coupon?',
+              showDenyButton: true,
+              showCancelButton: true,
+              confirmButtonText: 'Create',
+              denyButtonText: `Don't create`,
+            });
+
+            if (result.isConfirmed) {
+              await Swal.fire('created!', '', 'success');
+              this.submit();
+            } else if (result.isDenied) {
+              await Swal.fire('No coupon created', '', 'info');
+            }
+          } else {
+            errorBox.innerHTML = 'Fill the details correctly';
+          }
+        } else {
+          errorBox.innerHTML = 'Enter Valid Date';
+        }
+      } else {
+        errorBox.innerHTML = 'Enter Coupon Code';
+      }
+    });
+
+    function ChangeButton(id) {
+      document.getElementById('editBtn_' + id).type = 'submit'
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/adminFrontend.js"></script>
+  </body>
+
+  </html>

@@ -1,0 +1,142 @@
+<%- include('adminHeader') %>
+    <link rel="stylesheet" href="/css/templatemo-cyborg-gaming.css">
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <center>
+                    <% order.items.forEach((product)=>{ %>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  col-xxl-12" style="float: left;">
+                            <div class="page-content" style=" width: 100%; height: 300px; float: left; ">
+                                <div class="imageection">
+                                    <img src="<%= product.data.poster %>"
+                                        style="  width: 150px; height: 180px; padding-right: 20px; float: left; "
+                                        alt="">
+                                </div>
+                                <p class="text-light" style="width: auto;">Name : <%= product.data.name %>
+                                </p><br>
+                                <p class="text-light w-auto" style="width: auto;">Developed By : <%=
+                                        product.data.description.production %>
+                                </p><br>
+                                <p class="text-light w-auto" style="width: auto;">Age Restriction : <%=
+                                        product.data.restriction %>
+                                </p><br>
+                                <p class="text-light w-auto" style="width: auto;">Release Date : <%=
+                                        product.data.description.release %>
+                                </p><br>
+                                <p class="text-light w-auto" style="width: auto;">Price : <%= product.data.price %> /-
+                                </p><br>
+                                <p class="text-light w-auto" style="width: auto;">Quantity : <%= product.quantity %>
+                                </p><br>
+                                <p class="text-light w-auto" style="width: auto;">Total : <%= product.price %> /-
+                                </p><br>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <div class="col-xs-12">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12  col-xxl-12"
+                                    style="float: left;">
+                                    <div class="page-content" style="height: 300px;">
+                                        <div class="imageection">
+                                            <img src="/img/End Game.jpg"
+                                                style="  width: 150px; height: 180px; padding-right: 20px; float: left; "
+                                                alt="">
+                                        </div>
+                                        <p class="text-light">Order Id : <%= order._id %>
+                                        </p><br>
+                                        <p class="text-light">User Name : <%= user.name %>
+                                        </p><br>
+                                        <p class="text-light">Total Products : <%= order.items.length %>
+                                        </p><br>
+                                        <p class="text-light">Coupon Used : <%= (coupons!=null) ? coupons.name
+                                                : 'No coupon used' %>
+                                        </p><br>
+                                        <p class="text-light">Total Price : <%= order.total %>
+                                        </p><br>
+                                        <p class="text-light">Order Status : <%= order.status %>
+                                        </p><br>
+                                        <p class="text-light">
+                                            <% if(order.paymentId===null){ %>
+                                                Payment Status : Pending
+                                                <% } else if (order.status==='Cancelled' ) { %>
+                                                    Payment Status : Order Cancelled and Refund Done
+                                                    <% } else { %>
+                                                        Payment Reference : <%= order.paymentId %>
+                                                            <% } %>
+                                        </p><br>
+                                        <% if(order.status==='Pending' ) { %>
+                                            <% if(canceltrue!=null) { %>
+                                                <center class="pl-3">
+                                                    <p>!!! User requested to cancel the order !!!</p>
+                                                </center>
+                                                <center>
+                                                    <button class="btn btn-danger p-2 px-5 border-0 rounded-10"
+                                                        style="margin-left: 15%;"
+                                                        onclick="manageOrder('<%= order._id %>','cancel','<%= canceltrue.reason %>')">Cancel
+                                                        Order</button>
+                                                </center>
+                                                <% } else { %>
+                                                    <div id="btnDiv" style="display: block;">
+                                                        <button class="btn btn-danger p-2 px-5 border-0 rounded-10"
+                                                            onclick="manageOrder('<%= order._id %>','cancel')">Cancel
+                                                            Order</button>
+                                                        <button class="btn btn-danger p-2 px-5 border-0 rounded-10"
+                                                            onclick="manageOrder('<%= order._id %>','success')">Confirm
+                                                            Order</button>
+                                                    </div>
+                                                    <% } %>
+                                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                </center>
+
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyrigh 2036 All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .text-light {
+            line-height: 1%;
+        }
+
+        #reasonBox {
+            border: 1px solid red;
+            padding: 8px;
+            border-radius: 10px;
+            width: 50%;
+            padding-left: 20px;
+            color: black;
+            background: #fff;
+        }
+
+        #reasonBox::placeholder {
+            color: red;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/adminFrontend.js"></script>

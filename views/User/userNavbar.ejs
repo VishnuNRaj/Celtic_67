@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <title>EndGame the GamerStore || Games</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Bootstrap core CSS -->
+
+
+
+  <!-- Additional CSS Files -->
+  <link rel="stylesheet" href="/css/templatemo-cyborg-gaming.css">
+  <link rel="stylesheet" href="/css/owl.css">
+  <link rel="stylesheet" href="/css/animate.css">
+  <link rel="stylesheet" href="/css/userBootstrap.css">
+  <link rel="stylesheet" href="/css/flex-slider.css">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+  <!--
+
+TemplateMo 579 Cyborg Gaming
+
+https://templatemo.com/tm-579-cyborg-gaming
+
+-->
+</head>
+
+<body>
+
+  <!-- ***** Preloader Start ***** -->
+  <div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+      <span class="dot"></span>
+      <div class="dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+  <!-- ***** Preloader End ***** -->
+
+  <!-- ***** Header Area Start ***** -->
+  <header class="header-area header-fixed">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <nav class="main-nav">
+            <!-- ***** Logo Start ***** -->
+            <a href="/" class="logo">
+              <img src="/img/logo.png" alt="">
+            </a>
+            <!-- ***** Logo End ***** -->
+            <!-- ***** Search End ***** -->
+            <div class="search-input">
+              <form id="search" action="/searchGames" method="post">
+                <input type="text" placeholder="Search games" id='searchText' name="searchKeyword"
+                  onkeypress="handle" />
+                <i class="fa fa-search"></i>
+              </form>
+            </div>
+            <!-- ***** Search End ***** -->
+            <!-- ***** Menu Start ***** -->
+            <ul class="nav">
+              <li><center><a href="/" id="homePg">Home</a></center></li>
+              <li><center><a href="/games" id="gamesPg">Browse</a></center></li>
+              <li><center><a href="/wishlist" id="wishPg">Wishlist</a></center></li>
+              <li><center><a href="/cart" id="cartPg">Cart</a></center></li>
+              <% if (Name !=="" ) { %>
+                <li><center><a href="/profile" id="profilePg">Profile</a></center></li>
+                <a href="/newUser"></a>
+                <% } else { %>
+                  <li><center><a href="/login">Login</a></center></li>
+                  <a href="/newUser"></a>
+                  <% } %>
+            </ul>
+            <a class='menu-trigger'>
+              <span>Menu</span>
+            </a>
+            <!-- ***** Menu End ***** -->
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <script>
+    if (window.location.pathname === '/') {
+      let homePg = document.getElementById('homePg')
+      homePg.className = "active"
+    } else if (window.location.pathname === '/games') {
+      let gamesPg = document.getElementById('gamesPg')
+      gamesPg.className = "active"
+    } else if (window.location.pathname === '/profile') {
+      let profilePg = document.getElementById('profilePg')
+      profilePg.className = "active"
+    } else if (window.location.pathname === '/cart') {
+      let cartPg = document.getElementById('cartPg')
+      cartPg.className = "active"
+    } else if (window.location.pathname === '/wishlist') {
+      let wishPg = document.getElementById('wishPg')
+      wishPg.className = "active"
+    }
+  </script>

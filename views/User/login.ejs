@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EndGame the GamerStore || login</title>
+  <link rel='stylesheet' href='/css/Login.css' />
+  <script src="/js/common.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="video-container" style="background-color: #000;">
+    <center>
+      <img src="/img/pexels-pixabay-459762.jpg" style="width:80%; border-radius: 30px; height: 80vh; object-fit: cover; margin-top: 10vh; border: 5px solid white;" alt="">
+    </center>
+  </div>
+
+  <center>
+    <div class="container w-100">
+      <form action="/loginOtp" method="post" onsubmit="return otpVerify()">
+        <div class="row">
+          <div class="col-lg-6 col-md-8 col-sm-10 col-12">
+            <div class="loginMain" id="loginMain">
+              <span><img src="/img/End Game.jpg" class="image-fluid rounded-circle " style=" float: left;width: 100px;" alt=""></i></span>
+              <div class="heading-section" style="margin-top: 5vh;">
+                <h4><em>Welcome to </em>Endgame</h4>
+              </div>
+              <input type="text" class="textbox" value="alannixon2520@gmail.com" id="mailbox" name="email"  placeholder="Enter your email here" required>
+              <div class="input-container">
+                <input type="password" id="Pass" value="Alan@2520" class="password" name="password" placeholder="Enter your password" required>
+              <button class="Eyebtn" onclick="Eyefunc()" type="button">
+                <i id="logo" class="fa fa-eye-slash"></i>
+              </button>
+              </div>
+              <div class="alreadyuser" style="margin-top: 20px;">
+                <a href="/newUser" style=" color: aqua; font-size: 12px;">Create New Account</a> <span style="color: white; margin-left: 5px; margin-right: 5px;"> || </span>
+                <a href="/password" style=" color: aqua; font-size: 12px;">Forgot Password</a>
+              </div>
+              <div class="btnSection">
+                <button class="submit"  type="button" onclick="loginVerification()"  id="subBtn">Login</button>
+              </div>
+              <p style="color: red; font-size: 15px; margin-top: 30px;" id="errorShow"><%= err %></p>
+            </div>
+          </div>
+        </div>
+        <div class="container w-100">
+          <div class="otpBox" id="otpBox">
+          <input type="text" id="otp" value="" name="loginOtp" placeholder="Enter Otp">
+          <p style="color: red;">0.<span id="timer"></span></p>
+          <button type="submit" style="width: 80%; margin-top: -20px;" id="subBtn">Verify</button>
+          <div class="alreadyuser" style="margin-top: 20px;">
+            <button onclick="resending()" type="button" style="border: 0; background: transparent; color: aqua; font-size: 15px;">Resend Otp</button>
+          </div>
+          <p style="color: red; font-size: 15px; margin-top: 30px;" id="otpError"></p>
+      </div>
+      </form>
+    </div>
+  </center>
+</body>
+</html>

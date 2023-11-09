@@ -1,0 +1,151 @@
+.thead {
+    border: 1px solid white;
+    background:  #082567;
+    color: white;
+}
+
+.headings {
+    color: white;
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: dashed;
+  }
+
+  #typicalButton {
+    margin-left: 20%;
+  }
+  .btnSection {
+    width: 20%;
+    height: auto;
+    float: left;
+    margin-top: 20px;
+  }
+
+  .optionsButton1,
+  .optionsButton2,
+  .optionsButton3 {
+    width: 100%;
+    height: 100%;
+    height: 60px;
+    border-radius: 30px;
+  }
+
+  .optionsButton1 {
+    background: rgb(0, 155, 182);
+    border: 1px solid white;
+    font-size: 20px;
+    color: white;
+    font-weight: 600;
+  }
+
+  .optionsButton2 {
+    background: rgb(3, 100, 3);
+    border: 1px solid white;
+    font-size: 20px;
+    color: white;
+    font-weight: 600;
+  }
+
+  .optionsButton3 {
+    background: red;
+    border: 1px solid white;
+    font-size: 20px;
+    color: white;
+    font-weight: 600;
+  }
+
+
+  .optionsBar {
+    width: 80%;
+    margin-left: 10%;
+    float: left;
+    background: rgba(19, 18, 18, 0.5);
+  }
+
+  .requirementsBar {
+    width: 40%;
+    height: 230px;
+    padding: 5px;
+    float: left;
+    margin-left: 10%;
+    background: rgba(19, 18, 18, 0.5);
+    border: 2px solid white;
+  }
+  .aboutBar {
+    width: 40%;
+    height: 230px;
+    padding: 5px;
+    float: left;
+    background: rgba(19, 18, 18, 0.5);
+  }
+
+  .carouselbar {
+    width: 40%;
+    height: 300px;
+    margin-top: 5%;
+    float: left;
+    margin-left: 10%;
+    border: 5px solid white;
+    border-radius: 10px; margin-right: 10px; margin-bottom: 10px;
+  }
+
+  .detailsbar {
+    width: 40%;
+    height: 300px;
+    padding: 50px;
+    float: left;
+    margin-top: 5%;
+    background: rgba(19, 18, 18, 0.5);
+  }
+
+  .nameSpan {
+    color: white;
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  @media (max-width: 1024px) {
+    .carouselbar {
+      width: 80%;
+      height: 100%;
+      margin-top: 5%;
+      float: left;
+      margin-left: 10%;
+    }
+    #typicalButton {
+    margin-left: 0%;
+    margin-top: 30px;
+  }
+
+  .aboutBar {
+    width: 80%;
+    height: 230px;
+    padding: 5px;
+    float: left;
+    margin-left: 10%;
+    padding: 2%;
+    background: rgba(19, 18, 18, 0.5);
+  }
+    .btnSection {
+    width: 100%;
+    height: auto;
+    float: left;
+  }
+
+    .requirementsBar {
+      width: 80%;
+      height: 100%;
+      float: left;
+      margin-left: 10%;
+    }
+
+    .detailsbar {
+      width: 80%;
+      height: 40%;
+      padding-top: 30px;
+      float: left;
+      margin-left: 10%;
+      margin-top: 0%;
+      background: rgba(82, 80, 80, 0.5);
+    }
+  }

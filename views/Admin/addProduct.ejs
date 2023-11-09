@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>End game || Products Management</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Libraries Stylesheet -->
+
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/css/adminBootstrap.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/css/AdminHome.css" rel="stylesheet">
+</head>
+
+<body>
+    <%- include('adminHeader') %>
+
+        <% if (games===null) { %>
+
+            <form action="/admin/add" id="addProductForm"
+                style="padding-top: 50px; padding-bottom: 50px; background: black;" method="post"
+                enctype="multipart/form-data">
+
+                <label for="name">Name</label>
+                <center>
+                    <input type="text" placeholder="Name" name="name" id="name" required>
+                </center>
+
+                <label for="genre">Genre</label>
+                <center>
+                    <input type="text" name="genre" placeholder="Genre" id="genre" required>
+                </center>
+
+                <label for="about">About</label>
+                <center>
+                    <textarea name="about" id="about" placeholder="About the Game" cols="30" rows="10"
+                        required></textarea>
+                </center>
+
+                <label for="price">Price</label>
+                <center>
+                    <input type="number" name="price" id="price" placeholder="Price" required>
+                </center>
+
+                <label for="version">Version</label>
+                <center>
+                    <input type="text" name="version" id="version" placeholder="Version" required>
+                </center>
+
+                <label for="production">Production</label>
+                <center>
+                    <input type="text" name="production" id="production" placeholder="Produced by" required>
+                </center>
+
+                <label for="release">Release Date</label>
+                <center>
+                    <input type="text" name="release" id="release" placeholder="Release Date" required>
+                </center>
+
+                <label for="restriction">Age Restriction</label>
+                <center>
+                    <input type="text" name="restriction" id="restriction" placeholder="Age Restriction" required>
+                </center>
+
+                <label for="ram">RAM (Minimum Requirement)</label>
+                <center>
+                    <input type="text" name="ram" id="ram" required>
+                </center>
+
+                <label for="storage">Storage (Minimum Requirement)</label>
+                <center>
+                    <input type="text" name="storage" id="storage" required>
+                </center>
+
+                <label for="processor">CPU (Minimum Requirement)</label>
+                <center>
+                    <input type="text" name="processor" id="processor" required>
+                </center>
+
+                <label for="gpu">GPU (Minimum Requirement)</label>
+                <center>
+                    <input type="text" name="gpu" id="gpu" required>
+                </center>
+
+                <label for="Images">Poster</label>
+                <center>
+                    <input type="file" name="poster" id="images" accept="image/*" required>
+                </center>
+                <label for="Images">Images</label>
+                <input type="file" name="images" id="images" style="width: 24%; margin-left: 25%; float: left;"
+                    accept="image/*" required>
+                <input type="file" name="images" id="images"
+                    style="width: 24%; float: left; margin-left: 2%; margin-right: 25%;" accept="image/*" required>
+                <input type="file" name="images" id="images"
+                    style=" float: left; width: 24%; margin-left: 25%; margin-top: 20px;" accept="image/*" required>
+                <input type="file" name="images" id="images"
+                    style="width: 24%; float: left; margin-left: 2%; margin-right: 25%; margin-top: 20px;"
+                    accept="image/*" required>
+
+
+                <center>
+                    <button type="submit" class="addProductButton">Upload</button>
+                </center>
+
+            </form>
+
+            <% } else if (games!=null) { %>
+
+                <form onsubmit="return alertWindow()" action="/admin/update" id="updateProductForm"
+                    style="padding-top: 50px; padding-bottom: 50px; background: black;" method="post"
+                    enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="<%= games._id %>">
+                    <label for="name">Name</label>
+                    <center>
+                        <input type="text" value="<%= games.name %>" name="name" id="name" required>
+                    </center>
+                    <label for="dropdown">Visible</label>
+                    <center>
+                        <select id="dropdown" name="visible">
+                            <option value="true" <%= (games.visible === true) ? 'selected' : '' %>>true</option>
+                            <option value="false" <%= (games.visible === false) ? 'selected' : '' %>>false</option>
+                        </select>
+                    </center>
+
+                    <label for="genre">Genre</label>
+                    <center>
+                        <input type="text" name="genre" value="<%= games.genre %>" placeholder="Genre" id="genre"
+                            required>
+                    </center>
+
+                    <label for="about">About</label>
+                    <center>
+                        <textarea name="about" id="about" placeholder="About the Game" cols="30" rows="10"
+                            required><%= games.about %></textarea>
+                    </center>
+
+                    <label for="price">Price</label>
+                    <center>
+                        <input type="number" name="price" value="<%= games.price %>" id="price" placeholder="Price"
+                            required>
+                    </center>
+
+                    <label for="version">Version</label>
+                    <center>
+                        <input type="text" name="version" value="<%= games.description.version %>" id="version"
+                            placeholder="Version" required>
+                    </center>
+
+                    <label for="production">Production</label>
+                    <center>
+                        <input type="text" name="production" value="<%= games.description.production %>" id="production"
+                            placeholder="Produced by" required>
+                    </center>
+
+                    <label for="release">Release Date</label>
+                    <center>
+                        <input type="text" name="release" value="<%= games.description.release %>" id="release"
+                            placeholder="Release Date" required>
+                    </center>
+
+                    <label for="restriction">Age Restriction</label>
+                    <center>
+                        <input type="text" name="restriction" value="<%= games.description.restriction %>"
+                            id="restriction" placeholder="Age Restriction" required>
+                    </center>
+
+                    <label for="ram">RAM (Minimum Requirement)</label>
+                    <center>
+                        <input type="text" value="<%= games.description.minimumRequirements.ram %>" name="ram" id="ram"
+                            required>
+                    </center>
+
+                    <label for="storage">Storage (Minimum Requirement)</label>
+                    <center>
+                        <input type="text" value="<%= games.description.minimumRequirements.storage %>" name="storage"
+                            id="storage" required>
+                    </center>
+
+                    <label for="processor">CPU (Minimum Requirement)</label>
+                    <center>
+                        <input type="text" value="<%= games.description.minimumRequirements.processor %>"
+                            name="processor" id="processor" required>
+                    </center>
+
+                    <label for="gpu">GPU (Minimum Requirement)</label>
+                    <center>
+                        <input type="text" name="gpu" value="<%= games.description.minimumRequirements.gpu %>" id="gpu"
+                            required>
+                    </center>
+
+                    <label for="Images">Poster</label>
+                    <center>
+                        <img src="<%= games.poster %>" alt="" style="width: 100px;">
+                    </center>
+                    <center>
+                        <input type="file" name="images" id="images" placeholder="<%= games.poster %>"
+                            value="<%= games.poster %>" accept="image/*">
+                    </center>
+                    <center>
+                        <button type="submit" class="addProductButton">Upload</button>
+                    </center>
+
+                </form>
+                <% } %>
+
+
+                    <style>
+                        input,
+                        select,
+                        option {
+                            border: 1px solid rgb(247, 251, 255);
+                            width: 50%;
+                            padding: 10px;
+                            padding-right: 20px;
+                            padding-left: 20px;
+                            border-radius: 5px;
+                            color: #000;
+                            font-weight: 600;
+                            background: white;
+                        }
+
+                        textarea {
+                            width: 50%;
+                            color: #000;
+                            font-weight: 600;
+                            border-radius: 5px;
+                            background: #fff;
+                            border: 1px solid rgb(247, 251, 255);
+                            padding: 10px;
+                            padding-right: 20px;
+                            padding-left: 20px;
+                        }
+
+                        input::placeholder {
+                            color: aqua;
+                        }
+
+                        label {
+                            width: 50%;
+                            margin-top: 10px;
+                            margin-left: 25%;
+                            color: white;
+                            font-weight: 500;
+                            align-self: center;
+                        }
+                    </style>
+                    <script>
+                        function alertWindow() {
+                            Swal.fire({
+                                title: 'Do you want to save the changes?',
+                                showDenyButton: true,
+                                showCancelButton: true,
+                                confirmButtonText: 'Save',
+                                denyButtonText: `Don't save`,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire('Saved!', '', 'success')
+                                    return true;
+                                } else if (result.isDenied) {
+                                    Swal.fire('Changes are not saved', '', 'info')
+                                    return false;
+                                }
+                            })
+                        }
+                    </script>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                        crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+                        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                        crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+                        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                        crossorigin="anonymous"></script>
+                    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+                    <script src="/js/adminFrontend.js"></script>
+
+</body>
+
+</html>

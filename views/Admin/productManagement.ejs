@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>End game || Products Management</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Libraries Stylesheet -->
+
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/css/adminBootstrap.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/css/AdminHome.css" rel="stylesheet">
+</head>
+
+<body>
+    <%- include('adminHeader') %>
+        <button onclick="addProduct()" type="button" id="GoToAddProduct">Add-product</button>
+        <button type="button" style="width: auto;" onclick="viewProducts()" id="GoToAddProduct">View all
+            products</button>
+        <div class="container-fluid">
+            <h1 style="margin-left: 5%; margin-top: 3%; color: red; float: left;">Manage Products</h1>
+        </div>
+        <% if(search===false) { %>
+
+            <div class="fullCards" id="fullCards">
+                <% products.forEach(function (game,i,array) { %>
+                    <div class="Card">
+                        <div class="imageShow" onclick="updateProducts('<%= game._id %>')">
+                            <img src="<%= game.poster %>" style="width: 170px; height: 100%; float: left;" alt="">
+                        </div>
+                        <div class="cardBody" onclick="updateProducts('<%= game._id %>')">
+                            <h6>Name : <%= game.name %>
+                            </h6>
+                            <h6>Produced by : <%= game.description.production %>
+                            </h6>
+                            <h6>Released on : <%= game.description.release %>
+                            </h6>
+                            <h6>Price : <%= game.price %> /-</h6>
+                            <h6>Total Downloads : <%= game.downloads%>
+                            </h6>
+                            <h6>Discount : <%= game.discount %>%</h6>
+                        </div>
+                        <div class="moreImages">
+                            <% game.image.forEach(function(images,i) { %>
+                                <img src="<%= images %>" style="width: 50%; height: 50%; float: left;" alt="">
+                                <% }) %>
+                        </div>
+                    </div>
+                    <% }); %>
+            </div>
+            <div style="width: 100%; margin-top: 100px;">
+                <div class="container-fluid">
+                    <h1 style="margin-left: 5%; margin-top: 45px; color: red; float: left;">
+                        <%= tagline %>
+                    </h1>
+                    <form action="/admin/searchProducts" method="post">
+                        <button class="btn rounded-0 btn-danger"
+                            style="padding: 5px; margin-top: 50px; float: right; margin-right: 5%; font-size: 19px;"
+                            type="submit">Search</button>
+                        <input type="text"
+                            style=" margin-top: 50px; width: 20%; padding: 5px; font-size: 18px; float: right;"
+                            id="SearchInput" name="searchdata" placeholder="Search Category">
+                    </form>
+                    <table class="table table-bordered"
+                        style="width: 90%; margin-left: 5%; margin-top: 50px; border: 1px solid #333; background-color: white;">
+                        <thead>
+                            <tr>
+                                <th class="Thead">
+                                    <center>Sl No</center>
+                                </th>
+                                <th class="Thead">
+                                    <center>Genre</center>
+                                </th>
+                                <th class="Thead">
+                                    <center>Total Games</center>
+                                </th>
+                                <th class="Thead">
+                                    <center>Display</center>
+                                </th>
+                                <th class="Thead">
+                                    <center>Options</center>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% let SLNo=1 %>
+                                <% category.forEach(function(genres) { %>
+                                    <tr id="">
+                                        <td class="Thead">
+                                            <center>
+                                                <%= SLNo %>
+                                            </center>
+                                        </td>
+                                        <td class="Thead" id="tgenre" style="padding-top: 16px ;">
+                                            <center><input type="text" oninput="showSaveButton('<%= genres._id %>')"
+                                                    style="border: 0;" name="genres" id="genre_<%= genres._id %>"
+                                                    value="<%= genres.genre %>" required>
+                                            </center>
+                                        </td>
+                                        <td class="Thead" id="tgames" style="padding-top: 16px ;">
+                                            <center>
+                                                <%= genres.gamesInTotal %>
+                                            </center>
+                                        </td>
+                                        <td class="Thead" style="padding-top: 16px;">
+                                            <center id="visible_<%= genres._id %>">
+                                                <%= (genres.visible===true) ? 'Visible' : 'Hidden' %>
+                                            </center>
+                                        </td>
+                                        <td class="Thead">
+                                            <center>
+                                                <button class="options1"
+                                                    onclick="updateCategory('<%= genres._id %>','update')"
+                                                    style="margin-left: 20px; display: none;"
+                                                    id="saveBtn_<%= genres._id %>">
+                                                    <center>Save Changes</center>
+                                                </button>
+                                                <button class="options1" onclick="updateCategory('<%= genres._id %>','remove'
+                                                )" id="removeBtn_<%= genres._id %>" style="margin-left: 20px;">
+                                                    <center>
+                                                        <%= (genres.visible===true) ? 'Hide' :'Show' %>
+                                                    </center>
+                                                </button>
+                                            </center>
+                                        </td>
+                                    </tr>
+                                    <% SLNo++ %>
+                                        <% }); %>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <% } else if ( search===true) { %>
+
+                <div class="fullCards" id="fullCards" style="display: block;">
+                    <div class="container-fluid">
+                        <h1 style="margin-left: 5%; margin-top: 3%; color: red; float: left;">
+                            <%= tagline %>
+                        </h1>
+                    </div>
+                    <% products.forEach(function (game,i,array) { %>
+                        <div class="Card">
+                            <div class="imageShow" onclick="updateProducts('<%= game._id %>')">
+                                <img src="<%= game.poster %>" style="width: 170px; height: 100%; float: left;" alt="">
+                            </div>
+                            <div class="cardBody" onclick="updateProducts('<%= game._id %>')">
+                                <h6>Name : <%= game.name %>
+                                </h6>
+                                <h6>Produced by : <%= game.description.production %>
+                                </h6>
+                                <h6>Released on : <%= game.description.release %>
+                                </h6>
+                                <h6>Price : <%= game.price %> /-</h6>
+                                <h6>Total Downloads : <%= game.downloads%>
+                                </h6>
+                                <h6>Discount : <%= game.discount %>%</h6>
+                            </div>
+                            <div class="moreImages">
+                                <% game.image.forEach(function(images,i) { %>
+                                    <img src="<%= images %>" style="width: 50%; height: 50%; float: left;" alt="">
+                                    <% }) %>
+                                        <center>
+                                            <button></button>
+                                        </center>
+                            </div>
+                        </div>
+                        <% }); %>
+                </div>
+                <div style="width: 100%; margin-top: 100px;">
+                    <div class="container-fluid">
+                        <h1 style="margin-left: 5%; width: 50%; margin-top: 45px; color: red; float: left;">
+                            Categories
+                        </h1>
+                        <form action="/admin/searchProducts" method="post">
+                            <button class="btn rounded-0 btn-danger"
+                                style="padding: 5px; margin-top: 50px; float: right; margin-right: 5%; font-size: 19px;"
+                                type="submit">Search</button>
+                            <input type="text"
+                                style=" margin-top: 50px; width: 20%; padding: 5px; font-size: 18px; float: right;"
+                                id="SearchInput" name="searchdata" placeholder="Search Category">
+                        </form>
+                        <table class="table table-bordered"
+                            style="width: 90%; margin-left: 5%; margin-top: 50px; border: 1px solid #333; background-color: white;">
+                            <thead>
+                                <tr>
+                                    <th class="Thead">
+                                        <center>Sl No</center>
+                                    </th>
+                                    <th class="Thead">
+                                        <center>Genre</center>
+                                    </th>
+                                    <th class="Thead">
+                                        <center>Total Games</center>
+                                    </th>
+                                    <th class="Thead">
+                                        <center>Display</center>
+                                    </th>
+                                    <th class="Thead">
+                                        <center>Options</center>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% let SLNo=1 %>
+                                    <% category.forEach(function(genres) { %>
+                                        <tr id="">
+                                            <td class="Thead">
+                                                <center>
+                                                    <%= SLNo %>
+                                                </center>
+                                            </td>
+                                            <td class="Thead" id="tgenre" style="padding-top: 16px ;">
+                                                <center><input type="text" oninput="showSaveButton('<%= genres._id %>')"
+                                                        style="border: 0;" name="genres" id="genre_<%= genres._id %>"
+                                                        value="<%= genres.genre %>" required>
+                                                </center>
+                                            </td>
+                                            <td class="Thead" id="tgames" style="padding-top: 16px ;">
+                                                <center>
+                                                    <%= genres.gamesInTotal %>
+                                                </center>
+                                            </td>
+                                            <td class="Thead" style="padding-top: 16px;">
+                                                <center id="visible_<%= genres._id %>">
+                                                    <%= (genres.visible===true) ? 'Visible' : 'Hidden' %>
+                                                </center>
+                                            </td>
+                                            <td class="Thead">
+                                                <center>
+                                                    <button class="options1"
+                                                        onclick="updateCategory('<%= genres._id %>','update')"
+                                                        style="margin-left: 20px; display: none;"
+                                                        id="saveBtn_<%= genres._id %>">
+                                                        <center>Save Changes</center>
+                                                    </button>
+                                                    <button class="options1" onclick="updateCategory('<%= genres._id %>','remove'
+                                                    )" id="removeBtn_<%= genres._id %>" style="margin-left: 20px;">
+                                                        <center>
+                                                            <%= (genres.visible===true) ? 'Hide' :'Show' %>
+                                                        </center>
+                                                    </button>
+                                                </center>
+                                            </td>
+                                        </tr>
+                                        <% SLNo++ %>
+                                            <% }); %>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <% } %>
+
+                    <style>
+                        #categories {
+                            width: 80%;
+                            height: auto;
+                            background: transparent;
+                            color: black;
+                            display: flex;
+                            margin-top: 50px;
+                            margin-left: 10%;
+                        }
+
+                        .moreImages {
+                            width: 40%;
+                            float: left;
+                            margin-left: 50px;
+                        }
+
+                        .Card {
+                            width: 80%;
+                            margin-left: 10%;
+                            height: 220px;
+                            background: white;
+                            display: flex;
+                            margin-top: 50px;
+                        }
+
+                        h6 {
+                            color: black;
+                        }
+
+                        .cardBody {
+                            float: left;
+                            font-size: 18px;
+                            margin-top: 20px;
+                        }
+
+                        .imageShow {
+                            width: 250px;
+                            float: left;
+                        }
+
+                        .fullCards {
+                            width: 100%;
+                            height: auto;
+                            margin-top: 80px;
+                            margin-bottom: 50px;
+                            background: #000;
+                            display: none;
+                        }
+
+                        .options {
+                            z-index: 10;
+                        }
+                    </style>
+
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                        crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+                        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                        crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+                        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                        crossorigin="anonymous"></script>
+                    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+                    <script src="/js/adminFrontend.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>End Game || Admin</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="/img/favicon.ico" rel="icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/css/adminBootstrap.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/css/AdminHome.css" rel="stylesheet">
+</head>
+
+<body>
+    <%- include('adminHeader') %>
+
+        <div class="container-fluid">
+            <h1 style="margin-left: 5%; margin-top: 10px; color: red; float: left;">User List</h1>
+            <form action="admin/searchUser" method="post">
+                <input type="text"
+                    style="margin-left: 50%; margin-top: 10px; width: 20%; padding: 5px; font-size: 18px; float: left;"
+                    id="SearchInput" name="searchdata" placeholder="Search for users">
+                <button class="btn rounded-0 btn-danger" style="padding: 5px; margin-top: 10px; font-size: 19px;"
+                    type="submit">Search</button>
+            </form>
+            <table class="table table-bordered" style="width: 90%; margin-left: 5%; margin-top: 50px; border: 1px solid #333; background-color: white;">
+                <thead>
+                    <tr>
+                        <th class="Thead">
+                            <center>Sl No</center>
+                        </th>
+                        <th class="Thead">
+                            <center>Name</center>
+                        </th>
+                        <th class="Thead">
+                            <center>Email</center>
+                        </th>
+                        <th class="Thead">
+                            <center>Status</center>
+                        </th>
+                        <th>
+                            <center>Admin</center>
+                        </th>
+                        <th class="Thead">
+                            <center>Options</center>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let SLNo=1 %>
+                        <% userDetails.forEach(function(user) { %>
+                            <tr id="user_<%= user._id %>">
+                                <td class="Thead">
+                                    <center>
+                                        <%= SLNo %>
+                                    </center>
+                                </td>
+                                <td class="Thead" id="tname" style="padding-top: 16px ;">
+                                    <center><%= user.name %></center>
+                                </td>
+                                <td class="Thead" id="temail" style="padding-top: 16px ;">
+                                    <center><%= user.email %></center>
+                                </td>
+                                <td class="Thead" id="status_<%= user._id %>" style="padding-top: 16px ;">
+                                    <center>
+                                        <%= user.status === true ? 'Active' : 'Blocked' %>
+                                    </center>
+                                </td>
+                                <td class="Thead" id="isAdmin_<%= user._id %>" style="padding-top: 16px ;">
+                                    <center>
+                                        <%= user.isAdmin === true ? 'Yes' : 'No' %>
+                                    </center>
+                                </td>
+                                <td class="Thead">
+                                    <center>
+                                        <button class="options1" onclick="updateStatus('<%= user._id %>','Delete')"
+                                            style="margin-left: 20px; ">
+                                            <center>Delete</center>
+                                        </button>
+                                        <button class="options1" style="margin-left: 20px;" onclick="updateStatus('<%= user._id %>','Block')"
+                                            id="blockButton_<%= user._id %>">
+                                            <center>
+                                                <%= user.status === true ? 'Block' : 'Unblock' %>
+                                            </center>
+                                        </button>
+                                        <button class="options1" style="margin-left: 20px;" onclick="updateStatus('<%= user._id %>','Admin')"
+                                            id="adminButton_<%= user._id %>">
+                                            <center>
+                                                <%= user.isAdmin === true ? 'User' : 'Admin' %>
+                                            </center>
+                                        </button>
+                                    </center>
+                                </td>
+                            </tr>
+                            <% SLNo++ %>
+                                <% }); %>
+
+                </tbody>
+            </table>
+        </div>
+
+
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/adminFrontend.js"></script>
+</body>
+
+</html>

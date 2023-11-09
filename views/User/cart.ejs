@@ -1,0 +1,107 @@
+<%- include ('userNavbar') %>
+
+
+  <div class="gaming-library" style="margin-top: 100px;">
+    <div class="col-lg-12">
+      <% if(cart!="" ) { %>
+        <center>
+          <div class="heading-section">
+            <h4><em>My </em> Cart</h4>
+          </div>
+        </center>
+        <% games.forEach(function (game) { %>
+          <% if(game.data.visible===true) { %>
+            <div class="item" id="item_<%= game.productId %>">
+              <ul>
+                <li><img src="<%= game.data.poster %>" alt="" class="templatemo-item"></li>
+                <li style="margin-right: 30px;">
+                  <h4>
+                    <%= game.data.name %>
+                  </h4><span>
+                    <%= game.data.genre %>
+                  </span>
+                </li>
+
+                <li style="margin: auto;">
+                  <h4>Age Restriction</h4><span>
+                    <%= game.data.description.restriction %>
+                  </span>
+                </li>
+                <li>
+                  <h4>Price</h4><span id="price_<%= game.productId %>">
+                    <%= game.price %> /-
+                  </span>
+                </li>
+                <li>
+                  <h4>Quantity</h4>
+                  <button style="background:transparent; border: 0; color: red;"><i class="fa fa-minus"
+                      onclick="quantity('<%= game.productId %>','<%= userId %>','minus','<%= game.data.price %>')"></i></button>
+                  <span style="color: white; margin-left: 5px; margin-right: 5px;"
+                    id="quantitySpan_<%= game.productId %>">
+                    <%= game.quantity %>
+                  </span>
+                  <button style="background:transparent; border: 0; color: green;"
+                    onclick="quantity('<%= game.productId %>','<%= userId %>','add','<%= game.data.price %>')"><i
+                      class="fa fa-plus"></i></button>
+                </li>
+                <li>
+                  <div class="main-border-button border-no-active"><button
+                      style="background: green; border: 0; width: 200px; height: 50px; font-weight: 600; border-radius: 20px;"
+                      onclick="buyNow('<%= game.data._id %>','<%= userId %>','<%= game.quantity %>','one')">Buy
+                      Now</button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <% } else { %>
+              <% } %>
+                <% }) %>
+                  <center>
+                    <button class="Buyall" style="background: red; margin-right: 10%;"
+                      onclick="clearCart('<%= userId %>')">Clear Cart</button>
+                    <button class="Buyall" onclick="buyAll('<%= userId %>')">Buy All</button>
+                  </center>
+                  <% } else { %>
+                    <center>
+                      <div class="heading-section">
+                        <h4><em>No </em> Game Found</h4>
+                      </div>
+                      <a href="/games">Browse More</a>
+                    </center>
+                    <% } %>
+    </div>
+  </div>
+
+  <style>
+    @media (max-width:1024px) {
+      li {
+        margin: 0;
+      }
+    }
+
+    .Buyall {
+      width: 200px;
+      background: rgb(5, 163, 5);
+      color: #fff;
+      font-size: 22px;
+      font-weight: 600;
+      height: 60px;
+      border: 0;
+      border-radius: 30px;
+    }
+  </style>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+
+  <script src="/js/isotope.min.js"></script>
+  <script src="/js/owl-carousel.js"></script>
+  <script src="/js/tabs.js"></script>
+  <script src="/js/popup.js"></script>
+  <script src="/js/custom.js"></script>
+  <script src="/js/gamesJs.js"></script>
+  </body>
+
+  </html>

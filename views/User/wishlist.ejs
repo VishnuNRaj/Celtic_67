@@ -1,0 +1,143 @@
+<%- include('userNavbar') %>
+    <!-- ***** Header Area End ***** -->
+    <% if(games==="" ) { %>
+        <div class="start-stream" id="liveStream" style="margin-top: 10%;">
+            <div class="col-lg-12">
+                <div class="heading-section">
+                    <h4><em>No </em>Favourites Found</h4>
+                    <a href="/games" style="margin-top: 30px;">Browse Games</a>
+                </div>
+            </div>
+        </div>
+        <% } else { %>
+            <div class="start-stream" id="liveStream" style="margin-top: 10%;">
+                <div class="col-lg-12">
+                    <div class="heading-section">
+                        <h4><em>My </em>Favourites</h4>
+                    </div>
+                    <div class="row">
+                        <% games.forEach(function(game) { %>
+                            <% if (game.visible===true) { %>
+                                <div class="col-lg-4" style="margin-top: 20px;" id="Cards_<%= game._id %>">
+                                    <div class="item" style="float: left; width: 100%; height: 100%; ">
+                                        <div style="float: right;">
+                                            <button class="optionButton"
+                                                onclick="addtoCart2('<%= user._id %>','<%= game._id %>')">
+                                                <center>
+                                                    <i class="fa fa-shopping-cart"
+                                                        style="font-size: 18px; color: green; font-weight: 600;"></i>
+                                                </center>
+                                            </button>
+                                            <button class="optionButton"
+                                                onclick="deleteFromWishlist('<%= game._id %>','<%= user._id %>')">
+                                                <center>
+                                                    <i class="fa fa-trash-o"
+                                                        style="color: red; font-size: 18px; font-weight: 600;"></i>
+                                                </center>
+                                            </button>
+                                        </div>
+
+                                        <div onclick="goToDetails('<%= game._id %>')">
+
+                                            <div class="icon">
+                                                <img src="<%= game.poster %>" alt=""
+                                                    style="width: 100px; height: 150px; border-radius: 50%;">
+                                            </div>
+
+                                            <h4>
+                                                <%= game.name %>
+                                            </h4>
+                                            <p class="detailsTag">
+                                                <%= game.genre %>
+                                            </p>
+                                            <p class="detailsTag">
+                                                <%= game.description.production %>
+                                            </p>
+                                            <p class="detailsTag">
+                                                <%= game.price %> /-
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } else { %>
+                                    <div class="col-lg-4" style="margin-top: 20px;" id="Cards_<%= game._id %>">
+                                        <div class="item" style="float: left; width: 100%; height: 100%; ">
+                                            <div style="float: right;">
+                                                <button class="optionButton">
+                                                    <center>
+                                                        <i class="fa fa-shopping-cart"
+                                                            style="font-size: 18px; color: green; font-weight: 600;"></i>
+                                                    </center>
+                                                </button>
+                                                <button class="optionButton"
+                                                    onclick="deleteFromWishlist('<%= game._id %>','<%= user._id %>')">
+                                                    <center>
+                                                        <i class="fa fa-trash-o"
+                                                            style="color: red; font-size: 18px; font-weight: 600;"></i>
+                                                    </center>
+                                                </button>
+                                            </div>
+
+                                            <div>
+                                                <div class="icon">
+                                                    <img src="<%= game.poster %>" alt=""
+                                                        style="width: 100px; height: 150px; border-radius: 50%;">
+                                                </div>
+                                                <div style="float: right;">
+                                                    <h4>Unavailable</h4>
+                                                </div>
+
+                                                <h4>
+                                                    <%= game.name %>
+                                                </h4>
+                                                <p class="detailsTag">
+                                                    <%= game.genre %>
+                                                </p>
+                                                <p class="detailsTag">
+                                                    <%= game.description.production %>
+                                                </p>
+                                                <p class="detailsTag">
+                                                    <%= game.price %> /-
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                        <% }) %>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
+
+                <style>
+                    .optionButton {
+                        background: transparent;
+                        border: 1px solid white;
+                        border-radius: 10px;
+                        padding: 10px;
+                        padding-left: 15px;
+                        padding-right: 15px;
+                    }
+                </style>
+                <!-- ***** Featured Games End ***** -->
+
+                <!-- Bootstrap core JavaScript -->
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+                <script src="/js/jquery.min.js"></script>
+
+                <script src="/js/bootstrap.min.js"></script>
+                <script src="/js/isotope.min.js"></script>
+                <script src="/js/owl-carousel.js"></script>
+                <script src="/js/tabs.js"></script>
+                <script src="/js/popup.js"></script>
+                <script src="/js/custom.js"></script>
+                <script src="/js/gamesJs.js"></script>
+                <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+                </body>
+
+                </html>

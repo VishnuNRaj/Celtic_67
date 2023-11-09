@@ -1,0 +1,166 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.loginMain {
+    width: 500px;
+    display: block;
+    height: auto;
+    padding: 1%;
+    z-index: 30;
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#mailbox,
+#namebox,
+#userbox,
+#verifyBtn {
+    width: 90%;
+    padding: 10px;
+    margin-top: 15px;
+    border: 0;
+    background: transparent;
+    color: white;
+    font-size: 16px;
+}
+
+
+#mailbox,
+#namebox,
+#userbox {
+    border-bottom: 2px solid red;
+    font-weight: 400;
+}
+
+.otpBox {
+    margin-top: 25%;
+    width: 200px;
+    height: 180px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background: #333;
+    transition: 0.3s all;
+    display: none;
+}
+
+#Pass ,
+#Pass2 {
+    width: 60%;
+    padding: 10px;
+    margin-top: 15px;
+    border: 0;
+    background: transparent;
+    color: white;
+    font-size: 16px;
+    border-bottom: 2px solid red;
+}
+
+#otp {
+    width: 80%;
+    text-align: center;
+    margin-top: 15px;
+    border: 0;
+    background: transparent;
+    color: antiquewhite;
+    font-size: 16px;
+    border-bottom: 2px solid red;
+}
+
+
+#mailbox::placeholder,
+#namebox::placeholder,
+#userbox::placeholder,
+#Pass::placeholder,
+#Pass2::placeholder,
+#otp::placeholder {
+    color: aqua;
+}
+
+.Eyebtn {
+    width: auto;
+    color: aqua;
+    border: 0;
+    background: transparent;
+    font-size: 16px;
+}
+
+#subBtn {
+    border-radius: 10px;
+    border: 1px solid white;
+    height: 50px;
+    width: 50%;
+    background: transparent;
+    color: white;
+    font-weight: 600;
+    width: 60%;
+    transition: 0.5s;
+    font-size: 20px;
+}
+
+#subBtn:hover {
+    background: aqua;
+    color: #333;
+}
+
+.btnSection {
+    width: 100%;
+    margin-top: 30px;
+}
+
+
+.heading-section h4 {
+    font-weight: 600;
+    color: white;
+    font-size: 34px;
+    text-decoration: none;
+    margin-bottom: 30px;
+  }
+  
+  .heading-section h4 em {
+    color: #fff;
+    font-style: normal;
+    text-decoration: underline;
+  }
+
+
+
+@media screen and (max-width: 768px) {
+    .loginMain {
+        width: 80%;
+        margin: 0 auto;
+        padding: 5%;
+    }
+    .heading-section {
+        font-size: 20px;
+    }
+
+    #mailbox,
+    #namebox,
+    #userbox #Pass,#Pass2,
+    .Eyebtn,
+    #subBtn {
+        font-size: 14px;
+    }
+
+
+}
