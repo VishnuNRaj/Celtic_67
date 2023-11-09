@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
 const { log } = require('console')
-const { User, Products, Category } = require('../model/Mongoose')
+const { User, Products, Category, Banner } = require('../model/Mongoose')
 const { sentOtp } = require('../model/Mailer')
+const { findUsingId, findUsingEmail, getData } = require('./commonFunctions')
 
 const login = (req, res, next) => {
     try {
@@ -32,24 +33,21 @@ const login = (req, res, next) => {
 
 const userHome = async (req, res, next) => {
     try {
-        const featured = await Products.find({visible:true}).sort({_id:-1}).limit(4)
-        const trending = await Products.find({visible:true}).sort({downloads:-1}).limit(4)
+        const featured = await getData(Products, { visible: true }, { _id: -1 }, 0, 4)
+        const trending = await getData(Products, { visible: true }, { downloads: -1 }, 0, 4)
+        const banners = await Banner.findOne({ page: 'home' })
+        const userData = (req.session.user) ? await findUsingEmail(User, req.session.user) : ''
         if (req.session.user) {
-            const userData = await User.findOne({ email: req.session.user })
-            if (userData) {
-                if (userData.status === true) {
-                    res.render('User/userIndex', { Name: userData.name , featured,trending})
-                } else {
-                    req.session.blocked = true;
-                    res.redirect('/login')
-                }
-            } else {
+            if (!userData) {
                 req.session.deleted = true;
-                res.redirect('/login')
+                return res.redirect('/login')
+            } else if (!userData.status) {
+                req.session.blocked = true;
+                return res.redirect('/login')
             }
-        } else {
-            res.render('User/userIndex', { Name: "",featured,trending })
         }
+        const userName = (userData) ? userData.name : ''
+        res.render('User/userIndex', { Name: userName, featured, trending, banners })
     } catch (e) {
         console.error(e);
         res.redirect('/login')
@@ -108,7 +106,7 @@ const otpVerify = async (req, res, next) => {
                 if (req.session.otp === req.body.signUpOtp) {
                     data.password = await bcrypt.hash(data.password, 10)
                     req.session.user = req.body.email;
-                    await User.insertMany(data);
+                    req.session.userInfo = await User.insertMany(data);
                     req.session.otp = null
                     res.redirect('/');
                 } else {
@@ -177,10 +175,11 @@ const loginVerify = async (req, res, next) => {
         if (!userData) {
             res.status(488).json({ status: false })
         } else {
-            let passTrue = await bcrypt.compare(data.password, userData.password);
+            let passTrue = bcrypt.compare(data.password, userData.password);
             if (passTrue) {
                 if (userData.status === true) {
                     req.session.otp = sentOtp(userData.email)
+                    req.session.userInfo = userData
                     otpNull(req, res, next)
                     res.status(200).json({ status: true })
                 } else {
@@ -197,15 +196,6 @@ const loginVerify = async (req, res, next) => {
     }
 }
 
-async function findUsingEmail(db, email) {
-    try {
-        let userData = await db.findOne({ email: email })
-        return userData
-    } catch (e) {
-        console.error(e);
-        res.redirect('/login')
-    }
-}
 
 const searchMiddleware = (req, res, next) => {
     let data = req.body.searchKeyword
@@ -218,63 +208,58 @@ const searchMiddleware = (req, res, next) => {
     }
 }
 
+
 const games = async (req, res, next) => {
-    try {
-        if (req.session.searched) {
-            let searchData = new RegExp('^' + req.session.searchKeyword, 'i')
-            req.session.searched = false;
-            let gameData = await Products.find({
-                $or: [
-                    { name: { $regex: searchData } },
-                    { "description.production": { $regex: searchData } },
-                    { genre: { $regex: searchData } }
-                ]
-            });
-            if (req.session.user) {
-                let userData = await findUsingEmail(User, req.session.user)
-                if (userData) {
-                    res.render('User/games', { Name: userData.name, games: gameData, genres: await Category.find({}), search: true, tagline: [(gameData.length > 0) ? 'Games' : 'No Games', 'Found'] });
-                } else {
-                    req.session.deleted = true
-                    res.redirect('/login')
-                }
-            } else {
-                res.render('User/games', { Name: "", games: gameData, genres: await Category.find({}), search: true, tagline: [(gameData.length > 0) ? 'Games' : 'No Games', 'Found'] });
-            }
-        } else if (req.session.user) {
-            let userData = await findUsingEmail(User, req.session.user)
-            if (userData) {
-                if (userData.status === true) {
-                    if (req.session.genreSearch) {
-                        let products = await Category.findById(req.session.genreSearch)
-                        req.session.genreSearch = false
-                        res.render('User/games', { Name: userData.name, games: await Products.find({ genre: products.genre }), genres: await Category.find({}), search: true, tagline: ['Top ' + products.genre, ' Games'] })
-                    } else {
-                        res.render('User/games', { Name: userData.name, games: await Products.find({}), genres: await Category.find({}), search: false })
-                    }
-                } else {
-                    req.session.blocked = true;
-                    res.redirect('/login')
-                }
-            } else {
-                req.session.deleted = true;
-                res.redirect('/login')
-            }
-        } else {
-            console.log(req.session.genreSearch);
-            if (req.session.genreSearch) {
-                let products = await Category.findById(req.session.genreSearch)
-                req.session.genreSearch = false
-                res.render('User/games', { Name: "", games: await Products.find({ genre: products.genre }), genres: await Category.find({}), search: true, tagline: ['Top ' + products.genre, ' Games'] })
-            } else {
-                res.render('User/games', { Name: "", games: await Products.find({}), genres: await Category.find({}), search: false })
-            }
+    const filter = req.session.filter || { _id: 1 };
+    const page = (req.session.page) ? req.session.page : 0
+    const searchData = new RegExp('^' + req.session.searchKeyword, 'i');
+    const genre = await getData(Category, {}, { _id: 1 }, 0, 0)
+    let userName = (req.session.user) ? await User.findOne({email:req.session.user},{_id:0,name:1}) : ''
+    const featured = await getData(Products, { visible: true }, { downloads: -1 }, 0, 0)
+    let gameData = []
+    let length = 0
+    let search = false
+    if (req.session.searched) {
+        let query = {
+            visible: true,
+            $or: [
+                { name: { $regex: searchData } },
+                { "description.production": { $regex: searchData } },
+                { genre: { $regex: searchData } }
+            ]
         }
-    } catch (e) {
-        console.error(e);
-        res.redirect('/games')
+        gameData = await getData(Products, query, filter, page, 6)
+        length = (await getData(Products, query, filter, 0, 0)).length
+        search = true
+    } else if (req.session.genreSearch) {
+        const products = await findUsingId(Category, req.session.genreSearch)
+        const query = {
+            visible: true,
+            genre: products.genre
+        }
+        gameData = await getData(Products, query, filter, page, 6)
+        length = (await getData(Products, query, filter, 0, 0)).length
+        search = true
+    } else {
+        const query = {
+            visible: true
+        }
+        gameData = await getData(Products, query, filter, page, 6)
+        length = (await getData(Products, query, filter, 0, 0)).length
+        search = false
     }
+    res.render('User/games', {
+        Name: userName,
+        games: gameData,
+        genres: genre,
+        search,
+        length,
+        tagline: [(gameData.length > 0) ? 'Games' : 'No Games', 'Found'],
+        filter: req.session.filterType || '',
+        featured
+    });
 }
+
 
 const profile = async (req, res, next) => {
     try {
@@ -292,16 +277,18 @@ const editProfile = async (req, res, next) => {
         let data = req.body
         if (data.name && data.username) {
             let userData = await findUsingEmail(User, req.session.user)
+            const update = null
             if (userData.name != data.name) {
-                await User.findByIdAndUpdate(userData._id, { $set: { name: data.name } }, { upsert: true })
-                res.redirect('/profile')
+                update = { name: data.name }
             } else if (userData.username !== data.username) {
-                await User.findByIdAndUpdate(userData._id, { $set: { username: data.username } }, { upsert: true })
-                res.redirect('/profile')
-            } else {
-                res.redirect('/profile')
+                update = { username: data.username }
+            }
+            if (update != null) {
+                await User.findByIdAndUpdate(userData._id, { $set: update }, { upsert: true })
             }
         }
+        res.redirect('/profile')
+
     } catch (e) {
         console.error(e);
         res.redirect('/login')
@@ -316,7 +303,7 @@ const afterUpload = (req, res, next) => {
 const logOut = async (req, res, next) => {
     try {
         let id = req.query.id
-        let userData = await User.findById(id)
+        let userData = await findUsingId(User.id)
         if (userData && req.session.user === userData.email) {
             req.session.user = false
             res.redirect('/login')

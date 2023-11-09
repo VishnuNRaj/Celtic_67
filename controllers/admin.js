@@ -6,7 +6,8 @@ const {upload,posterUpdate} =require('../middleware/productManagement')
 const auth = require('../middleware/auth')
 const pdfs = require('../middleware/createPdf')
 const managements = require('../middleware/managements')
-const nocache = require('nocache')
+const nocache = require('nocache');
+const { banner, afterBanner, bannerChange, bannerName, afterNewBanner } = require('../middleware/profilePicture');
 router.use(nocache())
 
 router.get('/', middlewares.adminHome)
@@ -27,7 +28,7 @@ router.get('/add-product', auth.adminAuth,productManagement.addProduct)
 
 router.get('/update-product', auth.adminAuth,productManagement.updatePage)
 
-router.post('/update', posterUpdate.single('images'), productManagement.afterSave)
+router.post('/update', posterUpdate.fields([{name:'image',maxCount:5}]), productManagement.afterSave)
 
 router.post('/update-category', productManagement.updateCategory)
 
@@ -62,5 +63,14 @@ router.get('/daily',pdfs.Daily)
 router.get('/yearly',pdfs.yearly)
 
 router.get('/weekly',pdfs.Weekly)
+
+router.get('/banners',auth.adminAuth,managements.banners)
+
+router.post('/banners',banner.fields([{name:'productCarousel',maxCount:1},{name:'comingSoon',maxCount:1},{name:'offerBanner',maxCount:1}]),managements.addBanner)
+
+router.post('/updateBanner',bannerChange.fields([{name:'image',maxCount:1}]), afterBanner);
+
+router.post('/newBanner',banner.single('image'),afterNewBanner)
+
 
 module.exports = router;

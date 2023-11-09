@@ -1,4 +1,4 @@
-const { User, Admin, Coupon, Category, Order, Message, Products, getDate } = require('../model/Mongoose')
+const { User, Admin, Coupon, Category, Order, Message, Products, getDate, Banner } = require('../model/Mongoose')
 const { log, error } = require('console')
 const { refundOrder } = require('../model/payment')
 const { isObjectIdOrHexString, Aggregate } = require('mongoose')
@@ -107,9 +107,7 @@ let manageOrder = async (req, res, next) => {
             orderData.cancelDate = new Date()
             orderData.successDate = null
             orderData.reason = reason
-            refundOrder(orderData).then((refund) => {
-                orderData.refundId = 'refund'
-            })
+            await User.findByIdAndUpdate(orderData.userId, { $inc: { wallet: orderData.total } })
             await orderData.save()
             res.status(200).json({ status: true })
         } else if (need === 'success') {
@@ -117,13 +115,14 @@ let manageOrder = async (req, res, next) => {
             orderData.cancelDate = null
             orderData.successDate = new Date()
             orderData.reason = 'Confirmed Order'
-            for(const item of orderData.items) {
-                let rs = await Products.findByIdAndUpdate(item.productId, { $inc: { downloads: item.quantity } })
+            for (const item of orderData.items) {
+                await Products.findByIdAndUpdate(item.productId, { $inc: { downloads: item.quantity } })
             }
             await orderData.save()
             orderData.items.forEach(async (item) => {
                 await Products.findByIdAndUpdate(item.productId, { $inc: { downloads: item.quantity } })
             })
+            await User.findByIdAndUpdate(orderData.userId, { $inc: { purchase: orderData.items.length } })
             res.status(201).json({ status: true })
         } else {
             res.status(404).json({ status: true })
@@ -317,6 +316,26 @@ async function Yearly() {
     }
 }
 
+const banners = async (req, res, next) => {
+    const adminData = await Admin.findOne({ email: req.session.admin })
+    const messages = await messageFetch()
+    const banners = await Banner.find()
+    res.render('Admin/banners', { Name: adminData.name, Email: adminData.email, banners, messages })
+}
+
+const addBanner = async (req,res,next) => {
+    let data = {
+        offerString1:req.body.offerString1,
+        offerString2:req.body.offerString2,
+        offerString3:req.body.offerString3,
+        offerbanner:'/banners/'+ req.session.offerBanner,
+        comingSoon:'/banners/'+ req.session.comingSoon,
+        productCarousel:'/banners/'+ req.session.productCarousel,
+        page:req.body.page
+    }
+    await Banner.insertMany([data])
+    res.redirect('/admin/banners')
+}
 
 
-module.exports = { couponsPage, newCoupon, deleteCoupon, updateCoupon, orderManagement, manageOrder, orderDetails, markAsread, salesData, monthly, Yearly, weekly }
+module.exports = { couponsPage, newCoupon, deleteCoupon, updateCoupon, orderManagement, manageOrder, orderDetails, markAsread, salesData, monthly, Yearly, weekly , banners, addBanner}

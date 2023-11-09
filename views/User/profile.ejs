@@ -66,8 +66,8 @@
                   </div>
                   <div class="col-lg-4 align-self-center">
                     <ul>
-                      <li>Games Downloaded <span><%= data.downloads %></span></li>
-                      <li>Friends Online <span>16</span></li>
+                      <li>Games Downloaded <span><%= data.purchase %></span></li>
+                      <li>Wallet Balance <span><%= data.wallet %> INR</span></li>
                       <li><center><div class="main-border-button"><a href='/orders'>Order History</a></div></center></li>
                       <center><div class="main-border-button"><a href='/logout/?id=<%= data._id %>'>Logout</a></div></center>
                     </ul>
@@ -238,29 +238,6 @@
   </footer>
 
 
-  <!-- Scripts -->
-  <!-- Bootstrap core JavaScript -->
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
 
-  <script src="/js/isotope.min.js"></script>
-  <script src="/js/owl-carousel.js"></script>
-  <script src="/js/tabs.js"></script>
-  <script src="/js/popup.js"></script>
-  <script src="/js/custom.js"></script>
-  <script src="/js/common.js"></script>
-  <script src="/js/ImageVerifier.js"></script>
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
-
-</body>
-
-</html>
+  <%- include('userFooter') %>

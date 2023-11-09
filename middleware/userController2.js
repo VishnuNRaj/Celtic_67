@@ -2,45 +2,99 @@ let mongoose = require('mongoose')
 const { User, Products, Category, Wishlist, Cart, Coupon, Order, Message } = require('../model/Mongoose')
 let { sentOtp } = require('../model/Mailer')
 const PDFDocument = require('pdfkit-table')
+const { findUsingId, findUsingEmail, getData, findOneData } = require('./commonFunctions')
+const fs = require('fs')
+const path = require('path')
+const { error } = require('console')
+const { log } = require('console')
 
-let genresearch = async (req, res, next) => {
-    let genreData = await Category.findById(req.body.id)
-    if (genreData.visible === true) {
-        req.session.genreSearch = genreData._id
-        res.status(200).json({ status: true })
+
+const genresearch = async (req, res, next) => {
+    if (req.body.id != 'all') {
+        const genreData = await findUsingId(Category, req.body.id)
+        if (genreData.visible === true) {
+            req.session.genreSearch = genreData._id
+            res.status(200).json({ status: true })
+        } else {
+            res.status(452).json({ status: true })
+        }
     } else {
-        res.status(452).json({ status: true })
+        req.session.genreSearch = false
+        req.session.searched = false
+        res.status(200).json({ status: true })
     }
 }
+
+const filter = (req, res, next) => {
+    try {
+        const filterMap = {
+            low: { price: 1 },
+            high: { price: -1 },
+            A: { name: 1 },
+            Z: { name: -1 },
+            relevance: { price: 0 },
+            popular: { downloads: -1 },
+            new: { _id: -1 }
+        };
+
+        const filterType = req.body.filter;
+        const filterValue = filterMap[filterType];
+
+        if (filterValue) {
+            req.session.filterType = filterType;
+            req.session.filter = filterValue;
+            res.status(200).json({ status: true });
+        } else {
+            res.status(400).json({ status: true });
+        }
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ status: false });
+    }
+}
+
+
+
+const paginate = async (req, res, next) => {
+    req.session.page = req.body.page
+    res.status(200).json({ status: true })
+}
+
 
 const details = async (req, res, next) => {
     try {
         let id = req.query.id
-        if (id) {
+        log(mongoose.isObjectIdOrHexString(id))
+        if (mongoose.isObjectIdOrHexString(id)) {
             let gameDetails = await findUsingId(Products, id)
             if (gameDetails) {
+                let userData = await findUsingEmail(User,req.session.user)
+                let cart = false
+                let already = false
+                let userId = ''
+                let Name = ''
                 if (req.session.user) {
-                    let userData = await findUsingEmail(User, req.session.user)
                     if (userData) {
-                        let wishDetails = await Wishlist.findOne({
+                        let query = [{
                             userId: userData._id,
                             'productDetails.productId': id
-                        });
-                        let cartDetails = await Cart.findOne({
+                        },
+                        {
                             userId: userData._id,
                             'cartProducts.productId': id
-                        })
-                        let cart = (cartDetails) ? true : false
-                        let already = (wishDetails) ? true : false
-                        let userId = (userData) ? userData._id : ""
-                        let Name = (userData) ? userData.name : ""
-                        res.render('User/productDetails', { Name, games: gameDetails, userId, already, cart })
+                        }
+                        ]
+                        let wishDetails = await findOneData(Wishlist, query[0]);
+                        let cartDetails = await findOneData(Cart, query[1])
+                        cart = (cartDetails) ? true : false
+                        already = (wishDetails) ? true : false
+                        userId = (userData) ? userData._id : ""
+                        Name = (userData) ? userData.name : ""
                     } else {
-                        res.redirect('/games')
+                        return res.redirect('/games')
                     }
-                } else {
-                    res.render('User/productDetails', { Name: "", games: gameDetails, userId: "", already: false, cart: false })
                 }
+                res.render('User/productDetails', { Name, games: gameDetails, userId, already, cart })
             } else {
                 res.redirect('/games')
             }
@@ -54,32 +108,15 @@ const details = async (req, res, next) => {
 }
 
 
-async function findUsingId(db, id) {
-    try {
-        let userData = await db.findById(id)
-        return userData
-    } catch (e) {
-        console.error(e);
-        res.redirect('/login')
-    }
-}
-
-async function findUsingEmail(db, email) {
-    try {
-        let userData = await db.findOne({ email: email })
-        return userData
-    } catch (e) {
-        console.error(e);
-        res.redirect('/login')
-    }
-}
 
 
-let couponVerification = async (req, res, next) => {
+
+const couponVerification = async (req, res, next) => {
     try {
-        let couponData = await Coupon.findOne({ name: req.body.coupon })
+        const query = { name: req.body.coupon }
+        let couponData = await findOneData(Coupon, query)
         if (couponData) {
-            let userCoupons = await User.findById(req.body.id)
+            let userCoupons = await findUsingId(User, req.body.id)
             let userData = userCoupons.coupons.find((coupon) => {
                 if (coupon === couponData._id + "") {
                     return true
@@ -111,14 +148,13 @@ const orderDetails = async (req, res, next) => {
     let { id } = req.query
     try {
         if (mongoose.isObjectIdOrHexString(id)) {
-            let userData = await User.findOne({ email: req.session.user })
-            let order = await Order.findById(id)
-            const canceltrue = await Message.findOne({ id: id, message: 'Cancel order' })
+            let userData = await findUsingEmail(User,req.session.user)
+            let order = await findUsingId(Order,id)
+            const canceltrue = await findOneData(Message,{ id: id, message: 'Cancel order' })
             for (const item of order.items) {
-                item.data = await Products.findById(item.productId)
+                item.data = await findUsingId(Products,item.productId)
             }
-            let coupon = await Coupon.findById(order.coupons)
-            console.log(order);
+            let coupon = await findUsingId(Coupon,order.coupons)
             res.render('User/orderDetails', { Name: userData.name, user: userData, order, coupons: (order.coupons != null) ? coupon : null, canceltrue })
         }
     } catch (e) {
@@ -130,13 +166,12 @@ const orderDetails = async (req, res, next) => {
 const createPdf = async (req, res, next) => {
     try {
         const { id } = req.query;
-        let orderDetails = await Order.findById(id);
-        const userData = await User.findById(orderDetails.userId);
-        console.log(req.body, userData, orderDetails);
+        let orderDetails = await findUsingId(Order,id);
+        const userData = await findUsingId(User,orderDetails.userId)
         for (const item of orderDetails.items) {
-            item.data = await Products.findById(item.productId);
+            item.data = await findUsingId(Products,item.productId);
         }
-        const coupon = (orderDetails.coupons != null) ? await Coupon.findById(orderDetails.coupons) : null
+        const coupon = (orderDetails.coupons != null) ? await findUsingId(Coupon,orderDetails.coupons) : null
         const dc = (coupon != null) ? Math.floor((orderDetails.total / (1 - (coupon.deduction / 100)))) : null
 
         const doc = new PDFDocument();
@@ -183,7 +218,7 @@ const createPdf = async (req, res, next) => {
             valign: 'middle',
         });
         doc.moveDown();
-        doc.fontSize(10).text('Order Date & Time : ' + orderDetails.orderDate.toString() )
+        doc.fontSize(10).text('Order Date & Time : ' + orderDetails.orderDate.toString())
         doc.fontSize(10).text('Confirm Date & Time : ' + orderDetails.successDate.toString())
 
         doc.moveDown();
@@ -213,6 +248,25 @@ const createPdf = async (req, res, next) => {
 };
 
 
+const downloadGame = async (req,res,next) => {
+    try {
+        let {id} = req.query
+    const filename = 'Torrent file.torrent'
+    const filePath = path.join(__dirname, '/download', filename);
+    if (fs.existsSync(filePath)) {
+        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-type', 'application/octet-stream');
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(res);
+    } else {
+        res.redirect('/orders')
+    }
+    } catch (e) {
+        error(e)
+        res.redierect('/orders')
+    }
+}
 
 
-module.exports = { genresearch, details, couponVerification, orderDetails, createPdf }
+
+module.exports = { genresearch, details, couponVerification, orderDetails, createPdf, filter, paginate, downloadGame, }

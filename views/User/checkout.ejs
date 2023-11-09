@@ -9,7 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <title>EndGame the GamerStore || Games</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <!-- Bootstrap core CSS -->
 
 
@@ -18,7 +19,6 @@
   <link rel="stylesheet" href="/css/templatemo-cyborg-gaming.css">
   <link rel="stylesheet" href="/css/owl.css">
   <link rel="stylesheet" href="/css/animate.css">
-  <link rel="stylesheet" href="/css/userBootstrap.css">
   <link rel="stylesheet" href="/css/flex-slider.css">
   <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
   <!--
@@ -31,8 +31,444 @@ https://templatemo.com/tm-579-cyborg-gaming
 </head>
 
 <body>
-    
+  <center>
+    <div class="heading-section" style="margin-top: 3%;">
+      <h4 style="font-size: 40px;"><em>Purchase </em>Details</h4>
+    </div>
+  </center>
+  <% if(multi===true) { %>
+    <div class="modal fade" style="margin-top: 10%;" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel"
+      aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog m-auto">
+        <div class="modal-content bg-dark">
+          <div class="modal-body">
+            <center>
+              <div class="heading-section">
+                <h4><em>Confirm </em>Purchase</h4>
+              </div>
+              <div class="couponBox" style="width: 80%; margin: 5%;">
+                <span>Name : <%= user.name %> </span>
+              </div>
+              <div class="couponBox" style="width: 80%; margin: 5%;">
+                <span>Wallet : <%= user.wallet %> INR</span>
+              </div>
+              <div class="couponBox" style="width: 80%; margin: 5%;">
+                <span>Price : <%= amount %> INR</span>
+              </div>
+              <div class="couponBox" style="width: 80%; margin: 5%;">
+                <span>Balance : <%= user.wallet-amount %> INR</span>
+              </div>
+              <button class="btn btn-success p-2 px-5" style="height: 50px;"
+                onclick="walletPurchase('<%= user._id %>','<%= amount %>','all','all','all')">Purchase</button>
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" style="float: left;">
+      <div class="row">
+        <% let price=0 %>
+          <center>
+            <% games.forEach( (game)=> { %>
+              <div class="col-xs-12 col-sm-10 col-lg-10 col-xl-5 mt-5 mx-5" style="float: left; ">
+                <div class="card text-light border-light border-4"
+                  style=" float: left; height: 100%; background: #333; width: 100%; ">
+                  <div class="row no-gutters">
+                    <div class="col-md-4">
+                      <img src="<%= game.data.poster %>" style="width: auto; height: 250px; padding: 30px;"
+                        class="card-img" alt="">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body px-2">
+                        <div class="heading-section">
+                          <h4><em>Product </em> Details</h4>
+                        </div>
+                        <p class="card-text text-light">Name : <%= game.data.name %>
+                        </p>
+                        <p class="card-text text-light">Developed By : <%= game.data.description.production %>
+                        </p>
+                        <p class="card-text text-light">Downloads : <%= game.data.downloads %> || Price : <%=
+                              game.data.price %>
+                              INR
+                        </p>
+                        <p class="card-text text-light">Quantity : <%= game.quantity %> || Total : <%= game.price %>
+                              INR</p>
+                        <%= price+=game.price %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+                <% if (odd===true) { %>
+                  <div class="col-xs-12 col-sm-10 col-lg-10 col-xl-5 mt-5 mx-5" style="float: left;">
+                    <div class="card text-light border-danger border-4"
+                      style=" float: left; height: 100%; background: #333; width: 100%; ">
+                      <div class="row no-gutters">
+                        <div class="col-md-4">
+                          <img src="<%= user.image %>" style="width: auto; height: 250px; padding: 30px;"
+                            class="card-img" alt="">
+                        </div>
+                        <div class="col-md-8">
+                          <div class="card-body px-2">
+                            <center>
+                              <div class="heading-section">
+                                <h4><em>User </em> Details</h4>
+                              </div>
+                              <p class="card-text text-light">Name : <%= user.name %>
+                              </p>
+                              <p class="card-text text-light">Email : <%= user.email %>
+                              </p>
+                              <p class="card-text text-light">Username : <%= user.username %>
+                              </p>
+                              <p class="card-text text-light">Purchases : <%= user.purchase %> || Wallet : <%=
+                                    user.wallet %>
+                                    INR
+                              </p>
+                            </center>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %>
+          </center>
+          <% if(odd===false) { %>
+            <center>
+              <div class="col-xs-12 col-sm-10 col-lg-10 col-xl-5 mt-5 mx-5" style="margin-top: 10%;">
+                <div class="card text-light border-danger border-4"
+                  style=" float: left; height: 100%; background: #333; width: 100%; ">
+                  <div class="row no-gutters">
+                    <div class="col-md-4">
+                      <img src="<%= user.image %>" style="width: auto; height: 250px; padding: 30px;" class="card-img"
+                        alt="">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body px-2">
+                        <center>
+                          <div class="heading-section">
+                            <h4><em>User </em> Details</h4>
+                          </div>
+                          <p class="card-text text-light">Name : <%= user.name %>
+                          </p>
+                          <p class="card-text text-light">Email : <%= user.email %>
+                          </p>
+                          <p class="card-text text-light">Username : <%= user.username %>
+                          </p>
+                          <p class="card-text text-light">Purchases : <%= user.purchase %> || Wallet : <%= user.wallet
+                                %>
+                                INR
+                          </p>
+                        </center>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </center>
+            <% } %>
+              <center>
+                <div class="col-xs-12 col-sm-10 col-lg-10 col-xl-5 mt-5 mx-5">
+                  <div class="card text-light border-danger border-4"
+                    style=" float: left; height: 100%; background: #333; width: 100%; ">
+                    <div class="row no-gutters">
+                      <div class="col-md-4" style="border-radius: 20px;">
+                        <img src="/img/End Game.jpg"
+                          style="border-radius: 20px; height: 250px; width: 200px; padding: 30px;" class="card-img"
+                          alt="">
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body px-2">
+                          <center>
+                            <div class="heading-section">
+                              <h4><em>Payment </em> Details</h4>
+                            </div>
+                            <p class="card-text text-light">Total Products : <%= games.length %>
+                            </p>
+                            <p class="card-text text-light">Total Price : <%= price %>
+                            </p>
+                            <p class="card-text text-light">Coupon Used : <%= (coupon!='' ) ? coupon.name : 'None' %>
+                            </p>
+                            <% if(coupon!='' ) { %>
+                              <p class="card-text text-light">Discount % : <%= coupon.deduction %> %
+                              </p>
+                              <p class="card-text text-light">Grand Total : <%= amount %>
+                              </p>
+                              <% } else { %>
+                                <button class="btn btn-success p-2" data-bs-toggle="modal"
+                                  data-bs-target="#exampleModal">Apply
+                                  Coupon</button>
+                                <% } %>
+                          </center>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </center>
+              <div class="col-xs-12 col-sm-11 col-lg-11 col-xl-7 mt-5" style="float: left; margin-left: 3%;">
+                <div class="card text-light border-light border-4"
+                  style=" float: left; height: 100%; background: #333; width: 100%; ">
+                  <div class="row no-gutters">
+                    <div class="card-body px-2">
+                      <center>
+                        <div class="heading-section">
+                          <h4><em>Terms & </em>conditions</h4>
+                        </div>
+                      </center>
+                      <p style="color: white; font-size: 12px;">
+                        <center>By clicking the 'Purchase' button, you acknowledge and accept that this software is
+                          provided
+                          'as is' without warranties. Any potential issues or damages resulting from its use are your
+                          responsibility. We advise reviewing our terms and conditions before making a purchase.
+                          Proceeding with this purchase implies your agreement with these terms.</center>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-11 col-lg-11 col-xl-4 mt-5" style="float: left; margin-left: 3%;">
+                <div class="card text-light border-light border-4"
+                  style=" float: left; height: 100%; background: #333; width: 100%; ">
+                  <div class="row no-gutters">
+                    <div class="card-body px-2">
+                      <center>
+                        <div class="heading-section">
+                          <h4><em>Confirm </em> Payment</h4>
+                        </div>
+
+                        <div class="col-xs-12 px-5">
+                          <% if(user.wallet < amount) { %>
+                            <input type="radio" name="payment" id="wallet" value="wallet" disabled> Pay from Wallet
+                            <% } else { %>
+                              <input type="radio" name="payment" id="wallet" value="wallet"> Pay from Wallet
+                              <% } %>
+                        </div>
+                        <div class="col-xs-12 px-5">
+                          <input type="radio" name="payment" id="online" value="online" checked><span
+                            style="padding: 9px;">Pay via Online </span>
+                        </div>
+                        <div class="col-xs-12 px-5 mt-3">
+                          <button class="btn btn-success p-2 px-5 text-light"
+                            onclick="orderNow('<%= user._id %>','<%= amount %>','all','all','all')">Purchse</button>
+                        </div>
+                      </center>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      </div>
+    </div>
+    <% } else { %>
+      <div class="modal fade" style="margin-top: 10%;" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel"
+        aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog m-auto">
+          <div class="modal-content bg-dark">
+            <div class="modal-body">
+              <center>
+                <div class="heading-section">
+                  <h4><em>Confirm </em>Purchase</h4>
+                </div>
+                <div class="couponBox" style="width: 80%; margin: 5%;">
+                  <span>Name : <%= user.name %> </span>
+                </div>
+                <div class="couponBox" style="width: 80%; margin: 5%;">
+                  <span>Wallet : <%= user.wallet %> INR</span>
+                </div>
+                <div class="couponBox" style="width: 80%; margin: 5%;">
+                  <span>Price : <%= amount %> INR</span>
+                </div>
+                <div class="couponBox" style="width: 80%; margin: 5%;">
+                  <span>Balance : <%= user.wallet-amount %> INR</span>
+                </div>
+                <button class="btn btn-success p-2 px-5" style="height: 50px;"
+                  onclick="walletPurchase('<%= user._id %>','<%= amount %>','<%= games._id %>','<%= quantity %>','single')">Purchase</button>
+              </center>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid" style="float: left;">
+        <div class="row">
+          <div class="col-xs-12 col-sm-11 col-lg-11 col-xl-6 mt-5" style="float: left; margin-left: 3%; ">
+            <div class="card text-light border-light border-4"
+              style=" float: left; height: 100%; background: #333; width: 100%; ">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img src="<%= games.poster %>" style="width: auto; height: 250px; padding: 30px;" class="card-img"
+                    alt="">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body px-2">
+                    <div class="heading-section">
+                      <h4><em>Product </em> Details</h4>
+                    </div>
+                    <p class="card-text text-light">Name : <%= games.name %>
+                    </p>
+                    <p class="card-text text-light">Developed By : <%= games.description.production %>
+                    </p>
+                    <p class="card-text text-light">Downloads : <%= games.downloads %> || Price : <%= games.price %>
+                          INR
+                    </p>
+                    <p class="card-text text-light">Quantity : <%= quantity %> || Total : <%= quantity*games.price %>
+                          INR</p>
+                    <p class="card-text text-light">Coupons Used : <%= (coupon!='' ) ? coupon.name : 'None' %>
+                    </p>
+                    <% if(coupon!='' ) { %>
+                      <p class="card-text text-light">Discount % : <%= coupon.deduction %> %
+                      </p>
+                      <p class="card-text text-light">Grand Total : <%= amount %>
+                      </p>
+                      <% } else { %>
+                        <button class="btn btn-success p-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Apply
+                          Coupon</button>
+                        <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-11 col-lg-11 col-xl-5 mt-5" style="float: left; margin-left: 3%;">
+            <div class="card text-light border-light border-4"
+              style=" float: left; height: 100%; background: #333; width: 100%; ">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img src="<%= user.image %>" style="width: auto; height: 290px; padding: 30px;" class="card-img"
+                    alt="">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body px-2">
+                    <center>
+                      <div class="heading-section">
+                        <h4><em>User </em> Details</h4>
+                      </div>
+                      <p class="card-text text-light">Name : <%= user.name %>
+                      </p>
+                      <p class="card-text text-light">Email : <%= user.email %>
+                      </p>
+                      <p class="card-text text-light">Username : <%= user.username %>
+                      </p>
+                      <p class="card-text text-light">Purchases : <%= user.purchase %> || Wallet : <%= user.wallet %>
+                            INR
+                      </p>
+                    </center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-11 col-lg-11 col-xl-7 mt-5" style="float: left; margin-left: 3%;">
+            <div class="card text-light border-light border-4"
+              style=" float: left; height: 100%; background: #333; width: 100%; ">
+              <div class="row no-gutters">
+                <div class="card-body px-2">
+                  <center>
+                    <div class="heading-section">
+                      <h4><em>Terms & </em>conditions</h4>
+                    </div>
+                  </center>
+                  <p style="color: white; font-size: 12px;">
+                    <center>By clicking the 'Purchase' button, you acknowledge and accept that this software is
+                      provided
+                      'as is' without warranties. Any potential issues or damages resulting from its use are your
+                      responsibility. We advise reviewing our terms and conditions before making a purchase.
+                      Proceeding with this purchase implies your agreement with these terms.</center>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-11 col-lg-11 col-xl-4 mt-5" style="float: left; margin-left: 3%;">
+            <div class="card text-light border-light border-4"
+              style=" float: left; height: 100%; background: #333; width: 100%; ">
+              <div class="row no-gutters">
+                <div class="card-body px-2">
+                  <center>
+                    <div class="heading-section">
+                      <h4><em>Confirm </em> Payment</h4>
+                    </div>
+
+                    <div class="col-xs-12 px-5">
+                      <% if(user.wallet < amount) { %>
+                        <input type="radio" name="payment" id="wallet" value="wallet" disabled> Pay from Wallet
+                        <% } else { %>
+                          <input type="radio" name="payment" id="wallet" value="wallet"> Pay from Wallet
+                          <% } %>
+                    </div>
+                    <div class="col-xs-12 px-5">
+                      <input type="radio" name="payment" id="online" value="online" checked><span
+                        style="padding: 9px;">Pay via Online </span>
+                    </div>
+                    <div class="col-xs-12 px-5 mt-3">
+                      <button class="btn btn-success p-2 px-5 text-light"
+                        onclick="orderNow('<%= user._id %>','<%= amount %>','<%= games._id %>','<%= quantity %>','single')">Purchse</button>
+                    </div>
+                  </center>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <% } %>
+
+        <style>
+          .detailsBar {
+            background: #333;
+            width: auto;
+            height: 200px;
+            padding: 50px;
+            align-items: center;
+            margin-top: 2%;
+          }
+
+          .inputbox {
+            border: 1px solid white;
+            background: #000;
+            width: 80%;
+            height: 50px;
+            padding: 10px;
+            padding-left: 20px;
+            color: white;
+            border-radius: 10px;
+            float: left;
+          }
+
+          .couponBox {
+            width: 60%;
+            background: #333;
+            color: white;
+            height: 50px;
+            padding: 8px;
+            padding-left: 20px;
+            border-radius: 10px;
+            border: 1px solid white;
+          }
+        </style>
 
 
-</body>
-</html>
+
+        <div class="modal fade" style="margin-top: 20%;" id="exampleModal" tabindex="-1"
+          aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+          <div class="modal-dialog m-auto">
+            <div class="modal-content bg-dark">
+              <div class="modal-body">
+                <center>
+                  <div class="heading-section">
+                    <h4><em>Apply </em>Coupon</h4>
+                  </div>
+                </center>
+                <input type="text" id="coupon" class="couponBox">
+                <button class="btn btn-success p-2 px-5" style="height: 50px;"
+                  onclick="couponSubmit('<%= user._id %>','<%= amount %>')">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+          crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <%- include('userFooter') %>

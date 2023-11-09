@@ -7,151 +7,188 @@
 				<div class="page-content">
 
 					<!-- ***** Banner Start ***** -->
-					<div class="main-banner">
-						<div class="row">
-							<div class="col-lg-7">
-								<div class="header-text">
-									<h6>Welcome To Cyborg</h6>
-									<h4><em>Browse</em> Our Popular Games Here</h4>
-									<div class="main-button">
-										<a href="browse.html">Browse Now</a>
-									</div>
+					<div class="main-banner" style='background-image: url("/banners/<%= banners.offerbanner %>");' ">
+						<div class=" row">
+						<div class="col-lg-7">
+							<div class="header-text">
+								<h6>
+									<%= banners.offerString1 %>
+								</h6>
+								<h4 style="font-size: 30px;"><em>
+										<%= banners.offerString2 %><br>
+									</em>
+									<%= banners.offerString3 %>
+								</h4>
+								<div class="main-button">
+									<a href="/games">Browse Now</a>
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- ***** Banner End ***** -->
+				</div>
+				<!-- ***** Banner End ***** -->
 
-					<!-- ***** Most Popular Start ***** -->
-					<div class="most-popular">
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="heading-section">
-									<h4><i class="fa fa-star" style="color: yellow;"></i> <em>Featured</em> Games Now </h4>
-								</div>
-								<div class="row">
-									<% featured.forEach ( (game) => {  %>
+				<!-- ***** Most Popular Start ***** -->
+				<div class="most-popular">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="heading-section">
+								<h4><i class="fa fa-star" style="color: yellow;"></i> <em>Featured</em> Games Now </h4>
+							</div>
+							<div class="row">
+								<% featured.forEach ( (game)=> { %>
 									<div class="col-lg-3 col-sm-6" style="height: 100%;">
-										<div class="item" style="height: 100%;" onclick="goToDetails('<%= game._id %>')">
-											<img src="<%= game.poster %>" style="height: 250px;" alt="">
-											<h4><%= game.name %><br><span><%= game.genre %></span></h4>
+										<div class="item" style="height: 100%;"
+											onclick="goToDetails('<%= game._id %>')">
+											<img src="<%= game.poster %>" style="height: 280px;" alt="">
+											<h4>
+												<%= game.name %><br><span>
+														<%= game.genre %>
+													</span>
+											</h4>
 											<ul>
 												<li><i class="fa fa-featured"></i> </li>
-												<li><i class="fa fa-download"></i> <%= game.downloads %></li>
+												<li><i class="fa fa-download"></i>
+													<%= game.downloads %>
+												</li>
 											</ul>
 										</div>
 									</div>
 									<% }) %>
-								</div>
-							</div>
-							<div class="col-lg-12">
-								<div class="heading-section">
-									<h4><i class="fa fa-star" style="color: yellow;"></i> <em>Trending</em> Games Now </h4>
-								</div>
-								<div class="row">
-									<% trending.forEach ( (game) => {  %>
-										<div class="col-lg-3 col-sm-6" style="height: 100%;">
-											<div class="item" style="height: 100%;" onclick="goToDetails('<%= game._id %>')" >
-												<img src="<%= game.poster %>" style="height: 250px;" alt="">
-												<h4><%= game.name %><br><span><%= game.genre %></span></h4>
-												<ul>
-													<li><i class="fa fa-featured"></i> </li>
-													<li><i class="fa fa-download"></i> <%= game.downloads %></li>
-												</ul>
-											</div>
-										</div>
-										<% }) %>
-									
-									<div class="col-lg-12">
-										<div class="main-button">
-											<a href="/games">Discover More</a>
-										</div>
-									</div>
-								</div>
 							</div>
 						</div>
-					</div>
-					<!-- ***** Most Popular End ***** -->
-
-					<!-- ***** Gaming Library Start ***** -->
-					<div class="gaming-library">
 						<div class="col-lg-12">
 							<div class="heading-section">
-								<h4><em>Your Gaming</em> Library</h4>
+								<h4><i class="fa fa-star" style="color: yellow;"></i> <em>Coming</em> Soon</h4>
 							</div>
-							<div class="item">
-								<ul>
-									<li><img src="/img/game-01.jpg" alt="" class="templatemo-item"></li>
-									<li>
-										<h4>Dota 2</h4><span>Sandbox</span>
-									</li>
-									<li>
-										<h4>Date Added</h4><span>24/08/2036</span>
-									</li>
-									<li>
-										<h4>Hours Played</h4><span>634 H 22 Mins</span>
-									</li>
-									<li>
-										<h4>Currently</h4><span>Downloaded</span>
-									</li>
-									<li>
-										<div class="main-border-button border-no-active"><a href="#">Donwloaded</a>
+							<div class="row">
+								<% banners.comingSoon.forEach ( (banner)=> { %>
+									<div class="col-lg-3 col-sm-4" style="height: 100%;">
+										<div class="item" style="height: 100%;">
+											<img src="/banners/<%= banner %>" style="height: 280px;" alt="">
+											<center>
+												<h4>Coming Soon</h4>
+											</center>
 										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="item">
-								<ul>
-									<li><img src="/img/game-02.jpg" alt="" class="templatemo-item"></li>
-									<li>
-										<h4>Fortnite</h4><span>Sandbox</span>
-									</li>
-									<li>
-										<h4>Date Added</h4><span>22/06/2036</span>
-									</li>
-									<li>
-										<h4>Hours Played</h4><span>740 H 52 Mins</span>
-									</li>
-									<li>
-										<h4>Currently</h4><span>Downloaded</span>
-									</li>
-									<li>
-										<div class="main-border-button"><a href="#">Donwload</a></div>
-									</li>
-								</ul>
-							</div>
-							<div class="item last-item">
-								<ul>
-									<li><img src="/img/game-03.jpg" alt="" class="templatemo-item"></li>
-									<li>
-										<h4>CS-GO</h4><span>Sandbox</span>
-									</li>
-									<li>
-										<h4>Date Added</h4><span>21/04/2036</span>
-									</li>
-									<li>
-										<h4>Hours Played</h4><span>892 H 14 Mins</span>
-									</li>
-									<li>
-										<h4>Currently</h4><span>Downloaded</span>
-									</li>
-									<li>
-										<div class="main-border-button border-no-active"><a href="#">Donwloaded</a>
-										</div>
-									</li>
-								</ul>
+									</div>
+									<% }) %>
 							</div>
 						</div>
 						<div class="col-lg-12">
-							<div class="main-button">
-								<a href="profile.html">View Your Library</a>
+							<div class="heading-section">
+								<h4><i class="fa fa-star" style="color: yellow;"></i> <em>Trending</em> Games Now </h4>
+							</div>
+							<div class="row">
+								<% trending.forEach ( (game)=> { %>
+									<div class="col-lg-3 col-sm-6" style="height: 100%;">
+										<div class="item" style="height: 100%;"
+											onclick="goToDetails('<%= game._id %>')">
+											<img src="<%= game.poster %>" style="height: 250px;" alt="">
+											<h4 style="font-size: 14px;">
+												<%= game.name %><br><span>
+														<%= game.genre %>
+													</span>
+											</h4>
+											<ul>
+												<li><i class="fa fa-featured"></i> </li>
+												<li><i class="fa fa-download"></i>
+													<%= game.downloads %>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<% }) %>
+
+										<div class="col-lg-12">
+											<div class="main-button">
+												<a href="/games">Discover More</a>
+											</div>
+										</div>
 							</div>
 						</div>
 					</div>
-					<!-- ***** Gaming Library End ***** -->
 				</div>
+				<!-- ***** Most Popular End ***** -->
+
+				<!-- ***** Gaming Library Start ***** -->
+				<div class="gaming-library">
+					<div class="col-lg-12">
+						<div class="heading-section">
+							<h4><em>Your Gaming</em> Library</h4>
+						</div>
+						<div class="item">
+							<ul>
+								<li><img src="/img/game-01.jpg" alt="" class="templatemo-item"></li>
+								<li>
+									<h4>Dota 2</h4><span>Sandbox</span>
+								</li>
+								<li>
+									<h4>Date Added</h4><span>24/08/2036</span>
+								</li>
+								<li>
+									<h4>Hours Played</h4><span>634 H 22 Mins</span>
+								</li>
+								<li>
+									<h4>Currently</h4><span>Downloaded</span>
+								</li>
+								<li>
+									<div class="main-border-button border-no-active"><a href="#">Donwloaded</a>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="item">
+							<ul>
+								<li><img src="/img/game-02.jpg" alt="" class="templatemo-item"></li>
+								<li>
+									<h4>Fortnite</h4><span>Sandbox</span>
+								</li>
+								<li>
+									<h4>Date Added</h4><span>22/06/2036</span>
+								</li>
+								<li>
+									<h4>Hours Played</h4><span>740 H 52 Mins</span>
+								</li>
+								<li>
+									<h4>Currently</h4><span>Downloaded</span>
+								</li>
+								<li>
+									<div class="main-border-button"><a href="#">Donwload</a></div>
+								</li>
+							</ul>
+						</div>
+						<div class="item last-item">
+							<ul>
+								<li><img src="/img/game-03.jpg" alt="" class="templatemo-item"></li>
+								<li>
+									<h4>CS-GO</h4><span>Sandbox</span>
+								</li>
+								<li>
+									<h4>Date Added</h4><span>21/04/2036</span>
+								</li>
+								<li>
+									<h4>Hours Played</h4><span>892 H 14 Mins</span>
+								</li>
+								<li>
+									<h4>Currently</h4><span>Downloaded</span>
+								</li>
+								<li>
+									<div class="main-border-button border-no-active"><a href="#">Donwloaded</a>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="main-button">
+							<a href="profile.html">View Your Library</a>
+						</div>
+					</div>
+				</div>
+				<!-- ***** Gaming Library End ***** -->
 			</div>
 		</div>
+	</div>
 	</div>
 
 	<footer>
@@ -164,18 +201,4 @@
 		</div>
 	</footer>
 
-
-	<!-- Scripts -->
-	<!-- Bootstrap core JavaScript -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-	<script src="/js/gamesJs.js"></script>
-	<script src="/js/isotope.min.js"></script>
-	<script src="/js/owl-carousel.js"></script>
-	<script src="/js/tabs.js"></script>
-	<script src="/js/popup.js"></script>
-	<script src="/js/custom.js"></script>
-
-
-</body>
-
-</html>
+	<%- include('userFooter') %>

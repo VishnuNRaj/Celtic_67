@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 const middlewares = require('../middleware/userControllers')
 const middleware2 = require('../middleware/userController2')
-const {upload} = require('../middleware/profilePicture')
+const {upload, banner} = require('../middleware/profilePicture')
 const cartMiddlewares = require('../middleware/cartControllers')
+const orderMiddleware = require('../middleware/orderMiddleware')
 const auth = require('../middleware/auth')
 const nocache = require('nocache')
 
 
 router.use(nocache())
 
-router.get('/',middlewares.userHome)
+router.get('/',auth.userAuth,middlewares.userHome)
 
 router.get('/login',middlewares.login)
 
@@ -24,7 +25,11 @@ router.post('/signIn',middlewares.signUpVerify)
 
 router.post('/otp',middlewares.otpVerify)
 
-router.get('/games',middlewares.games)
+router.get('/games',auth.userAuth,middlewares.games)
+
+router.post('/filter',middleware2.filter)
+
+router.post('/paginate',middleware2.paginate)
 
 router.get('/logout',middlewares.logOut)
 
@@ -60,28 +65,32 @@ router.get('/cart',auth.userAuth,cartMiddlewares.cartPage)
 
 router.post('/quantity',cartMiddlewares.cartQuantity)
 
-router.post('/buynow',cartMiddlewares.buyNow)
+router.post('/buynow',orderMiddleware.buyNow)
 
 router.get('/checkout',auth.userAuth,cartMiddlewares.checkout)
 
 router.post('/clearCart',cartMiddlewares.clearCart)
 
-router.post('/buyall',cartMiddlewares.buyall)
+router.post('/buyall',orderMiddleware.buyall)
 
 router.post('/couponVerify',middleware2.couponVerification)
 
-router.post('/orderNow',cartMiddlewares.createOrder)
+router.post('/orderNow',orderMiddleware.createOrder)
 
-router.get('/orders',auth.userAuth, cartMiddlewares.orders)
+router.post('/walletPurchase',orderMiddleware.payFromwallet)
 
-router.post('/success',cartMiddlewares.paymentSuccess)
+router.get('/orders',auth.userAuth, orderMiddleware.orders)
 
-router.post('/closedWindow',cartMiddlewares.closedWindow)
+router.post('/success',orderMiddleware.paymentSuccess)
 
-router.post('/cancelOrder',cartMiddlewares.orderCancel)
+router.post('/closedWindow',orderMiddleware.closedWindow)
+
+router.post('/cancelOrder',orderMiddleware.orderCancel)
 
 router.get('/orderDetails',auth.userAuth,middleware2.orderDetails)
 
 router.get('/downloadPayment',auth.userAuth,middleware2.createPdf)
+
+router.get('/downloadGame',middleware2.downloadGame)
 
 module.exports = router;

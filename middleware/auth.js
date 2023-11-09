@@ -2,27 +2,43 @@ const { User, Admin } = require('../model/Mongoose')
 
 const userAuth = async (req, res, next) => {
     try {
-        if (req.session.user) {
-            let userData = await User.findOne({ email: req.session.user })
-            if (userData) {
-                if (userData.status === true) {
-                    console.log(req.path);
-                    if(req.path!='/checkout') {
-                        req.session.coupon = null
-                        req.session.need = null
-                        req.session.amount = null
+        console.log(req.path);
+        if (req.path === '/games' || req.path === '/') {
+            if (req.path != '/games') {
+                req.session.filter = false
+                req.session.page = false
+                req.session.genreSearch = false
+                req.session.searched = false
+            }
+            next()
+        } else {
+            if (req.session.user) {
+                req.session.userData = await User.findOne({ email: req.session.user })
+                if (req.session.userData) {
+                    if (req.session.userData.status === true) {
+                        console.log(req.path);
+                        if (req.path != '/checkout') {
+                            req.session.coupon = null
+                            req.session.need = null
+                            req.session.amount = null
+                        } else if (req.path != '/games') {
+                            req.session.filter = false
+                            req.session.page = false
+                            req.session.genreSearch = false
+                            req.session.searched = false
+                        }
+                        next()
+                    } else if (req.session.userData.status === false) {
+                        req.session.blocked = true
+                        res.redirect('/login')
                     }
-                    next()
-                } else if (userData.status === false) {
-                    req.session.blocked = true
+                } else {
+                    req.session.deleted = true
                     res.redirect('/login')
                 }
             } else {
-                req.session.deleted = true
                 res.redirect('/login')
             }
-        } else {
-            res.redirect('/login')
         }
     } catch (e) {
         console.error(e);
@@ -49,4 +65,4 @@ const adminAuth = async (req, res, next) => {
     }
 }
 
-module.exports = { userAuth , adminAuth}
+module.exports = { userAuth, adminAuth }

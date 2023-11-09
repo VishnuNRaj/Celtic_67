@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const { Products, Wishlist, Category, User, Admin, Cart, Orders, Order, Message } = require('../model/Mongoose')
 const { log, error } = require('console')
-const { generateOrder } = require('../model/payment')
 const addToWishlist = async (req, res, next) => {
     try {
         if (req.session.user) {
@@ -50,7 +49,6 @@ const addToWishlist = async (req, res, next) => {
         res.redirect('/games');
     }
 }
-
 
 const wishlistPage = async (req, res, next) => {
     try {
@@ -106,7 +104,7 @@ const addtoCart = async (req, res, next) => {
                 if (productDetails) {
                     res.status(201).json({ status: true });
                 } else {
-                    if (cartDetails.cartProducts.length < 5) {
+                    if (cartDetails.cartProducts.length < 10) {
                         let details = await Products.findOne({ _id: new mongoose.Types.ObjectId(productId) })
                         if (details) {
                             let insertDetails = {
@@ -166,6 +164,12 @@ const cartPage = async (req, res, next) => {
                         id.data = data
                     }
                 }
+                cartDetails.total = games.reduce((a,item)=>{
+                    item.price = item.data.price*item.quantity
+                    return a+item.data.price*item.quantity
+                },0)
+                console.log(cartDetails.total);
+                cartDetails.save()
                 res.render('User/cart', { Name: userData.name, userId: userData._id, cart, games });
             } else {
                 res.render('User/cart', { Name: userData.name, userId: userData._id, cart: "", games: "" });
@@ -198,7 +202,7 @@ const cartQuantity = async (req, res, next) => {
                     for (const price of cartDetails.cartProducts) {
                         amount += price.price
                     }
-                    if (amount < 20000) {
+                    if (amount < 100000) {
                         cartDetails.cartProducts.forEach((cart) => {
                             if (cart.productId === productId) {
                                 cart.quantity += 1;
@@ -239,43 +243,6 @@ const cartQuantity = async (req, res, next) => {
     }
 };
 
-let buyNow = async (req, res, next) => {
-    try {
-        let { productId, id, need } = req.body
-        let productDetails = await Products.findOne({ _id: new mongoose.Types.ObjectId(productId) })
-        if (req.session.user) {
-            if (need === 'one') {
-                let cartDetails = await Cart.findOne({ userId: id, 'cartProducts.productId': productId })
-                let cart = cartDetails.cartProducts.find((cart) => {
-                    if (cart.productId === productId) {
-                        return true
-                    } else {
-                        return false
-                    }
-                })
-                req.session.amount = cart.price
-                req.session.productId = cart.productId
-                req.session.quantity = cart.quantity
-                req.session.product = null
-                req.session.need = need
-                res.status(200).json({ status: true })
-            } else if (need === 'single') {
-                req.session.product = productDetails
-                req.session.quantity = false
-                req.session.productId = false
-                req.session.need = need
-                res.status(200).json({ status: true })
-            }
-        } else {
-            res.status(467).json({ status: true })
-        }
-    } catch (e) {
-        console.error(e);
-        res.status(404).json({ status: true })
-    }
-
-}
-
 
 let checkout = async (req, res, next) => {
     try {
@@ -289,7 +256,7 @@ let checkout = async (req, res, next) => {
             } else {
                 amount = req.session.amount
             }
-            res.render('User/checkout', { user: userData, amount, games: productDetails, quantity: req.session.quantity, multi: false, coupon: (req.session.coupon) ? req.session.coupon : '' })
+            res.render('User/checkout', { user: userData, amount, games: productDetails, quantity: req.session.quantity, multi: false, coupon: (req.session.coupon) ? req.session.coupon : '', odd: false })
         } else if (req.session.need === 'single') {
             let amount = 0
             if (req.session.coupon) {
@@ -297,27 +264,28 @@ let checkout = async (req, res, next) => {
             } else {
                 amount = req.session.product.price
             }
-            res.render('User/checkout', { user: userData, amount, games: req.session.product, quantity: 1, multi: false, coupon: (req.session.coupon) ? req.session.coupon : '' })
+            res.render('User/checkout', { user: userData, amount, games: req.session.product, quantity: 1, multi: false, coupon: (req.session.coupon) ? req.session.coupon : '', odd: false })
         } else if (req.session.need === 'all') {
             let cartDetails = await Cart.findOne({ userId: userData._id })
-            console.log(cartDetails);
             let games = cartDetails.cartProducts
             for (const id of games) {
-                let data = await Products.findOne({ _id: new mongoose.Types.ObjectId(id.productId) })
+                let data = await Products.findOne({ _id: new mongoose.Types.ObjectId(id.productId)})
                 if (data) {
                     id.data = data
                 }
             }
-
             let amount = 0
             log(req.session.coupon)
             if (req.session.coupon) {
-                amount = cartDetails.total - (cartDetails.total / req.session.coupon.deduction)
+                amount = cartDetails.total - (cartDetails.total * req.session.coupon.deduction / 100)
             } else {
                 amount = cartDetails.total
             }
-            log(amount)
-            res.render('User/checkout', { user: userData, amount, games, quantity: "", multi: true, coupon: (req.session.coupon) ? req.session.coupon : '' })
+            if (amount > 0) {
+                res.render('User/checkout', { user: userData, amount, games, quantity: "", multi: true, coupon: (req.session.coupon) ? req.session.coupon : '', odd: (games.length % 2 == 0) ? false : true })
+            } else if (amount <= 0) {
+                res.redierct('/cart')
+            }
         } else {
             res.redirect('/cart')
         }
@@ -340,130 +308,7 @@ const clearCart = async (req, res, next) => {
     }
 }
 
-
-let buyall = (req, res, next) => {
-    req.session.need = 'all'
-    res.status(200).json({ status: true })
-}
-
-
-let orders = async (req, res, next) => {
-    try {
-        let userData = await User.findOne({ email: req.session.user })
-        let order = await Order.find({ userId: userData._id }).sort({_id:-1})
-        res.render('User/orders', { Name: userData.name, userId: userData._id, orders: (order) ? order : '' })
-    } catch (e) {
-        error(e)
-        res.redirect('/profile')
-    }
-}
-
-let createOrder = async (req, res, next) => {
-    try {
-        let { userId, amount, productId, quantity, need } = req.body
-        let userData = await User.findById(userId)
-        if (userData) {
-            if (productId === 'all' && quantity === 'all') {
-                let cartDetails = await Cart.findOne({ userId: userId })
-                let orders = {
-                    userId: userId,
-                    items: cartDetails.cartProducts,
-                    coupons: (req.session.coupon) ? req.session.coupon._id : null,
-                    total: amount,
-                }
-                let response = await Order.insertMany([orders])
-                req.session.order = response[0]
-                response[0].total = response[0].total * 100
-                generateOrder(response[0]._id, response[0].total).then((order) => {
-                    log(order)
-                    res.status(200).json({ order: order })
-                })
-            } else if (need === 'single') {
-                let productDetails = await Products.findById(productId)
-                let orders = {
-                    userId: userId,
-                    items: [
-                        {
-                            productId: productId,
-                            quantity: quantity,
-                            price: productDetails.price*quantity,
-                        }
-                    ],
-                    coupons: (req.session.coupon) ? req.session.coupon._id : null,
-                    total: amount
-                }
-                let response = await Order.insertMany([orders])
-                req.session.order = response[0]
-                response[0].total = response[0].total * 100
-                generateOrder(response[0]._id, response[0].total).then((order) => {
-                    res.status(200).json({ order: order })
-                })
-            } else {
-                res.status(467).json({ status: true })
-            }
-        } else {
-            res.status(467).json({ status: true })
-        }
-    } catch (e) {
-        error(e)
-        res.status(404).json({ status: true })
-    }
-}
-
-let paymentSuccess = async (req, res, next) => {
-    try {
-        let { productId, userId, response } = req.body
-        let userData = await User.findById(userId)
-        if (userData.status) {
-            await Order.findByIdAndUpdate(req.session.order._id, { $set: { paymentId: response.razorpay_payment_id } })
-            const message = {
-                id: req.sesion.order._id,
-                message: 'New Order Recieved',
-                redirectTo: `/admin/orderDetails/?id=${req.session.order._id}`,
-                reason: 'order'
-            }
-            await Message.insertMany([message])
-            if (productId === 'all') {
-                await Cart.deleteOne({ userId: userId })
-            } else if (req.session.need === 'one') {
-                const cartDetails = await Cart.findOne({ userId: userId });
-                const data = cartDetails.cartProducts.find(cart => cart.productId === productId);
-                if (data) {
-                    await Cart.updateOne({ userId: userId }, {
-                        $inc: { total: -data.price },
-                        $pull: { cartProducts: { productId: productId } }
-                    });
-                }
-            }
-            req.session.need = false
-            req.session.coupon = false
-            res.status(200).json({ status: true })
-        } else {
-            res.status(467).json({ status: true })
-        }
-    } catch (e) {
-        error(e)
-        res.status(404).json({ status: true })
-    }
-}
-
-let orderCancel = async (req, res, next) => {
-    let { id, reason } = req.body
-    const message = {
-        id: id,
-        message: 'Cancel order',
-        reason: reason,
-        redirectTo: `/admin/orderDetails/?id=${id}`
-    }
-    await Message.insertMany([message])
-    res.status(200).json({ status: true })
-}
-
-let closedWindow = async (req, res, next) => {
-    await Order.findByIdAndDelete(req.session.order._id)
-    res.status(200).json({ status: true })
-}
 module.exports = {
-    addToWishlist, wishlistPage, wishRemove, addtoCart, cartPage, cartQuantity, buyNow,
-    checkout, clearCart, buyall, createOrder, orders, paymentSuccess, closedWindow, orderCancel
+    addToWishlist, wishlistPage, wishRemove, addtoCart, cartPage, cartQuantity,
+    checkout, clearCart,
 }

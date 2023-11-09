@@ -62,7 +62,7 @@ const adminLogin = (req, res, next) => {
 function otpNull(req, res, next) {
     setTimeout(() => {
         console.log("Null aakeee");
-        req.session.otp = null;
+        req.session.adminOtp = null;
     }, 1000 * 60)
 }
 
@@ -73,7 +73,7 @@ const adminVerification = async (req, res, next) => {
     if (adminData) {
         let passTrue = await bcrypt.compare(data.password, adminData.password)
         if (passTrue) {
-            req.session.otp = await sentOtp(data.email)
+            req.session.adminOtp = await sentOtp(data.email)
             otpNull(req, res, next)
             res.status(200).json({ status: true })
         } else {
@@ -87,8 +87,8 @@ const adminVerification = async (req, res, next) => {
 
 const otpVerify = async (req, res, next) => {
     let data = req.body
-    if (req.session.otp != null) {
-        if (req.session.otp === data.loginOtp) {
+    if (req.session.adminOtp != null) {
+        if (req.session.adminOtp === data.loginOtp) {
             req.session.admin = data.email
             res.redirect('/admin')
         } else {

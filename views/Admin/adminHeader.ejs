@@ -74,6 +74,8 @@
                             class="fa fa-table me-2"></i>Coupons</a>
                     <a href="/admin/orders" id="orderPg" class="nav-item nav-link"><i
                             class="fa fa-chart-bar me-2"></i>Orders</a>
+                    <a href="/admin/banners" id="bannerPg" class="nav-item nav-link"><i
+                            class="fa fa-chart-bar me-2"></i>Banners</a>
                 </div>
             </nav>
         </div>
@@ -161,25 +163,25 @@
 
                                     </div>
                                 </div>
-                                    <% }) %>
+                                <% }) %>
                                     <hr class="dropdown-divider">
                                     <a href="#" class="dropdown-item text-center">See all notifications</a>
                         </div>
                         <script>
                             function showBtn(id) {
-                                document.getElementById('markAsReadButton_'+id).style.display = 'block'
+                                document.getElementById('markAsReadButton_' + id).style.display = 'block'
                             }
                             function hideBtn(id) {
-                                document.getElementById('markAsReadButton_'+id).style.display = 'none'
+                                document.getElementById('markAsReadButton_' + id).style.display = 'none'
                             }
                             async function markAsRead(id) {
-                                let response = await fetch('/admin/markAsRead',{
-                                    method:'POST',
-                                    headers:{'Content-Type':'application/json'},
-                                    body:JSON.stringify({id})
+                                let response = await fetch('/admin/markAsRead', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id })
                                 })
-                                if(response.status === 200) {
-                                    document.getElementById('message_'+id).remove()
+                                if (response.status === 200) {
+                                    document.getElementById('message_' + id).remove()
                                 }
                             }
                         </script>
@@ -219,6 +221,9 @@
                     pg.className += " active"
                 } else if (window.location.pathname === '/admin/orders') {
                     let pg = document.getElementById('orderPg')
+                    pg.className += " active"
+                } else if (window.location.pathname === '/admin/banners') {
+                    let pg = document.getElementById('bannerPg')
                     pg.className += " active"
                 }
             </script>

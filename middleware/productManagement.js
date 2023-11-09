@@ -1,5 +1,6 @@
 const { Products, Category, Admin, Message } = require('../model/Mongoose')
-
+const multer = require('multer')
+const { findAndUpdate, inserter, findOneData, findUsingId, findUsingEmail } = require('./commonFunctions')
 
 const productSearch = (req, res, next) => {
     let { searchdata } = req.body
@@ -17,6 +18,8 @@ const saveProduct = async (req, res) => {
             name: req.body.name,
             genre: req.body.genre,
             about: req.body.about,
+            withoutDiscount: req.body.withoutDiscount,
+            discount: req.body.discount,
             description: {
                 version: req.body.version,
                 production: req.body.production,
@@ -29,7 +32,7 @@ const saveProduct = async (req, res) => {
                 },
                 restriction: req.body.restriction,
             },
-            price: req.body.price,
+            price: req.body.withoutDiscount - (req.body.withoutDiscount * req.body.discount/100),
             poster: `/products/${req.session.productNames[0]}`,
             image: [
                 `/products/${req.session.productNames[1]}`,
@@ -38,18 +41,18 @@ const saveProduct = async (req, res) => {
                 `/products/${req.session.productNames[4]}`,
             ]
         }
-        await Products.insertMany([product]);
+        await inserter(Products,product)
         req.session.productNames = false
-        let categoryDetails = await Category.findOne({ genre: product.genre })
+        let categoryDetails = await findOneData(Category,{ genre: product.genre })
         if (categoryDetails) {
-            await Category.findByIdAndUpdate(categoryDetails._id, { $inc: { gamesInTotal: 1 } });
+            await findAndUpdate(Category,categoryDetails._id, { $inc: { gamesInTotal: 1 } })
             res.redirect('/admin/products');
         } else {
             let inserted = {
                 genre: product.genre,
                 gamesInTotal: 1
             }
-            await Category.insertMany([inserted])
+            await inserter(Category,inserted)
             res.redirect('/admin/products');
         }
 
@@ -59,7 +62,6 @@ const saveProduct = async (req, res) => {
     }
 }
 
-const multer = require('multer')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'views/public/products/');
@@ -88,10 +90,7 @@ const savePoster = multer.diskStorage({
         cb(null, 'views/public/products/')
     },
     filename: async (req, file, cb) => {
-        let gamePoster = await Products.findById(req.body.id)
-        let id = gamePoster.poster
-        let filename = id.split('/products/')
-        cb(null, filename[1])
+        cb(null, file.originalname)
     }
 })
 
@@ -102,20 +101,21 @@ posterUpdate = multer({ storage: savePoster })
 
 const afterSave = async (req, res, next) => {
     try {
-        let gameDetails = await Products.findById(req.body.id)
+        let gameDetails = await findOneData(Products,req.body.id)
         if (gameDetails.genre != req.body.genre) {
             await Category.updateOne({ genre: gameDetails.genre }, { $inc: { gamesInTotal: -1 } }, { upsert: true })
-            let categoryDetails = await Category.findOne({ genre: req.body.genre })
+            let categoryDetails = await findOneData(Category,{ genre: req.body.genre })
             if (categoryDetails) {
-                await Category.findByIdAndUpdate(categoryDetails._id, { $inc: { gamesInTotal: 1 } })
+                await findAndUpdate(Category,categoryDetails._id, { $inc: { gamesInTotal: 1 } })
             } else if (!categoryDetails) {
                 let data = {
                     genre: req.body.genre,
                     gamesInTotal: 1
                 }
-                await Category.insertMany([data])
+                await inserter(Category,data)
             }
         }
+        console.log(req.body);
         const product = {
             name: req.body.name,
             genre: req.body.genre,
@@ -133,11 +133,13 @@ const afterSave = async (req, res, next) => {
                 },
                 restriction: req.body.restriction,
             },
-            price: req.body.price,
-
+            withoutDiscount: parseInt(req.body.withoutDiscount),
+            discount: parseInt(req.body.discount),
+            price: Math.floor(parseInt(req.body.withoutDiscount) - (parseInt(req.body.withoutDiscount) * (parseInt(req.body.discount) / 100)))
         }
+        console.log(product);
 
-        await Products.findByIdAndUpdate(req.body.id, { $set: product }, { upsert: true })
+        await findAndUpdate(Product,req.body.id, { $set: product })
         res.redirect('/admin/products')
 
     } catch (e) {
@@ -151,24 +153,24 @@ const updateCategory = async (req, res, next) => {
         let { need } = req.body
         if (need === 'update') {
             let { id, data } = req.body
-            let categoryDetails = await Category.findById(id)
+            let categoryDetails = await findUsingId(Category,id)
             if (categoryDetails) {
                 await Products.updateMany({ genre: categoryDetails.genre }, { $set: { genre: data } }, { upsert: true })
-                await Category.findByIdAndUpdate(id, { $set: { genre: data } }, { upsert: true })
+                await findAndUpdate(Category,id, { $set: { genre: data } })
                 res.status(200).json({ status: true })
             } else {
                 res.status(456).json({ status: true })
             }
         } else if (need === 'remove') {
             let { id } = req.body
-            let categoryDetails = await Category.findById(id)
+            let categoryDetails = await findUsingId(Category,id)
             if (categoryDetails.visible === true) {
-                await Category.findByIdAndUpdate(id, { $set: { visible: false } })
+                await findAndUpdate(Category,id, { $set: { visible: false } })
                 await Products.updateMany({ genre: categoryDetails.genre }, { $set: { visible: false } }, { upsert: true })
                 res.status(201).json({ status: true })
             } else if (categoryDetails.visible === false) {
                 await Products.updateMany({ genre: categoryDetails.genre }, { $set: { visible: true } })
-                await Category.findByIdAndUpdate(id, { $set: { visible: true } }, { upsert: true })
+                await findAndUpdate(Category,id, { $set: { visible: true } })
                 res.status(200).json({ status: true })
             } else {
                 res.status(499).json({ status: true })
@@ -197,20 +199,10 @@ const addProduct = async (req, res, next) => {
     let adminData = await findUsingEmail(Admin, req.session.admin)
     if (adminData) {
         const messages = await messageFetch()
-        res.render('Admin/addProduct', { Name: adminData.name, Email: adminData.email, products: Products.find({}), games: null,messages })
+        res.render('Admin/addProduct', { Name: adminData.name, Email: adminData.email, products: Products.find({}), games: null, messages })
     } else {
         req.session.adminnotfound = true
         res.redirect('/admin/login')
-    }
-}
-
-async function findUsingEmail(db, email) {
-    try {
-        let userData = await db.findOne({ email: email })
-        return userData
-    } catch (e) {
-        console.error(e);
-        res.redirect('/login')
     }
 }
 
@@ -219,10 +211,10 @@ const updatePage = async (req, res, next) => {
         let adminData = await findUsingEmail(Admin, req.session.admin)
         req.session.gameId = req.query.id
         if (req.session.gameId) {
-            let gameData = await Products.findById(req.session.gameId)
+            let gameData = await findUsingId(Products,req.session.gameId)
             if (gameData) {
                 const messages = await messageFetch()
-                res.render('Admin/addProduct', { Name: adminData.name, Email: adminData.email, games: gameData,messages })
+                res.render('Admin/addProduct', { Name: adminData.name, Email: adminData.email, games: gameData, messages })
             } else {
                 res.redirect('/admin/products')
             }

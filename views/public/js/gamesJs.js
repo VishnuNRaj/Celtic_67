@@ -24,6 +24,19 @@ async function genreSearch(id) {
     }
 }
 
+async function filterBy() {
+    let filter = document.getElementById('filter').value
+    if(filter === 'low' || filter === 'high' || filter === 'Z' || filter === 'A' || filter === 'relevance' || filter === 'popular' || filter === 'new' ) {
+        let response = await fetch('/filter',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({filter})
+        })
+        if(response.status === 200) {
+            location.reload()
+        }
+    }
+}
 
 
 async function deleteFromWishlist(id, userId) {
@@ -124,7 +137,17 @@ async function addtoWishlist(id, gameId) {
     }
 }
 
-//   quantity('<%= game.productId %>','<%= userId %>','minus')
+async function pagination(page) {
+    page = parseInt(page)*6
+    const response = await fetch('/paginate',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({page})
+    })
+    if(response.status === 200) {
+        window.location.href = '/games'
+    }
+}
 
 async function quantity(productId, id, need, rate) {
     let response = await fetch('/quantity', {
@@ -170,6 +193,8 @@ async function buyNow(productId, id, quantity, need) {
     })
     if (response.status === 200) {
         window.location.href = '/checkout'
+    } else {
+        window.location.href = '/login'
     }
 }
 
@@ -192,6 +217,11 @@ async function buyAll(id) {
     })
     if (response.status === 200) {
         window.location.href = '/checkout'
+    } else if (response.status === 201) {
+        Swal.fire(
+            'Product is Currently Unavailable..!',
+            'Sorry...!'
+        )
     }
 }
 
@@ -199,7 +229,7 @@ async function buyAll(id) {
 async function couponSubmit(id, price) {
     let coupon = document.getElementById('coupon').value.trim()
     if (coupon != "") {
-        console.log(coupon,id,price);
+        console.log(coupon, id, price);
         let response = await fetch('/couponVerify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -232,14 +262,30 @@ async function couponSubmit(id, price) {
 }
 
 async function orderNow(userId, amount, productId, quantity, need) {
+    const types = document.getElementsByName('payment')
+    let type = null
+    for (const pay of types) {
+        if (pay.checked) {
+            type = pay.value
+            break
+        }
+    }
     let response = await fetch('/orderNow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, amount, productId, quantity, need })
+        body: JSON.stringify({ userId, amount, productId, quantity, need, type })
     })
     if (response.status === 200) {
         let orderDetails = await response.json()
         await orderSuccess(userId, productId, orderDetails)
+    } else if (response.status === 202) {
+        // alert(response.status)
+        // const modal = document.getElementById("walletModal");
+        // modal.style.display = "block"; 
+        $("#walletModal").modal("show");
+    } else if (response.status === 203) {
+        await Swal.fire('Error!', 'Insufficient balance', 'Sorry!');
+        location.reload()
     } else if (afterPay.status === 467) {
         window.location.href = '/'
     } else {
@@ -262,16 +308,16 @@ async function orderSuccess(userId, productId, orderDetails) {
             await paymentDone(userId, productId, response, orderDetails)
         },
         "modal": {
-            "ondismiss": async function(){
-                 let closed = await fetch('/closedWindow',{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                 })
-                 if(closed.status === 200) {
+            "ondismiss": async function () {
+                let closed = await fetch('/closedWindow', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                })
+                if (closed.status === 200) {
                     await Swal.fire('Payment cancelled!', 'Please Complete the Payment', 'Error');
                     location.reload()
-                 }
-             }
+                }
+            }
         },
         "notes": {
             "address": "Endgame Gaming PVT LTD"
@@ -288,6 +334,22 @@ async function orderSuccess(userId, productId, orderDetails) {
     rzp1.open();
 }
 
+async function walletPurchase(userId, amount, productId, quantity, need) {
+    let response = await fetch('/walletPurchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, amount, productId, quantity, need })
+    })
+    if (response.status === 200) {
+        $(document).ready(function () {
+            $("#walletModal").modal('hide');
+        })
+        await Swal.fire('Order Success!', 'Waiting for Confirmation', 'success');
+        window.location.href = '/orders'
+    } else {
+        alert(response.status)
+    }
+}
 
 async function paymentDone(userId, productId, response, orderDetails) {
     let afterPay = await fetch('/success', {
@@ -302,5 +364,52 @@ async function paymentDone(userId, productId, response, orderDetails) {
         window.location.href = '/'
     } else {
         window.location.href = '/'
+    }
+}
+
+
+function orderCancel() {
+    document.getElementById('reason').style.display = 'block';
+    document.getElementById('btnDiv').style.display = 'none';
+}
+
+function cancelReason() {
+    document.getElementById('reason').style.display = 'none';
+    document.getElementById('btnDiv').style.display = 'block';
+}
+
+async function Cancel(id) {
+    let result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, cancel order!'
+    });
+    if (result.isConfirmed) {
+        let reason = document.getElementById('reasonBox').value;
+        let response = await fetch('/cancelOrder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, reason })
+        });
+        if (response.status === 200) {
+            Swal.fire(
+                'Sent!',
+                'Your Order Cancel Request was Delivered Wait for Response.',
+                'success'
+            );
+        } else {
+            Swal.fire(
+                'Sorry!',
+                'Your order was already approved.',
+                'sorry'
+            );
+        }
+    } else {
+        document.getElementById('reason').style.display = 'none';
+        document.getElementById('btnDiv').style.display = 'block';
     }
 }

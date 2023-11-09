@@ -27,6 +27,7 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/adminBootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
 
     <!-- Template Stylesheet -->
     <link href="/css/AdminHome.css" rel="stylesheet">
@@ -39,84 +40,157 @@
 
             <form action="/admin/add" id="addProductForm"
                 style="padding-top: 50px; padding-bottom: 50px; background: black;" method="post"
-                enctype="multipart/form-data">
+                enctype="multipart/form-data" onsubmit="return verifyData()">
 
                 <label for="name">Name</label>
                 <center>
-                    <input type="text" placeholder="Name" name="name" id="name" required>
+                    <p style="color: red; margin-top: 10px;" id="err1"></p>
+                    <input type="text" placeholder="Name" name="name" value="" id="name" required>
                 </center>
 
                 <label for="genre">Genre</label>
                 <center>
-                    <input type="text" name="genre" placeholder="Genre" id="genre" required>
+                    <p style="color: red; margin-top: 10px;" id="err2"></p>
+                    <input type="text" name="genre" placeholder="Genre" value="" id="genre" required>
                 </center>
 
                 <label for="about">About</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err3"></p>
                     <textarea name="about" id="about" placeholder="About the Game" cols="30" rows="10"
                         required></textarea>
                 </center>
 
-                <label for="price">Price</label>
+                <label for="price">Base Price</label>
                 <center>
-                    <input type="number" name="price" id="price" placeholder="Price" required>
+                    <p style="color: red; margin-top: 10px;" id="err4"></p>
+                    <input type="number" name="withoutDiscount" id="price" placeholder="Price" required>
+                </center>
+
+                <label for="price">Discount Percentage</label>
+                <center>
+                    <p style="color: red; margin-top: 10px;" id="err5"></p>
+                    <input type="number" name="discount" value="" id="discount" placeholder="Price" required>
                 </center>
 
                 <label for="version">Version</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err6"></p>
                     <input type="text" name="version" id="version" placeholder="Version" required>
                 </center>
 
                 <label for="production">Production</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err7"></p>
                     <input type="text" name="production" id="production" placeholder="Produced by" required>
                 </center>
 
                 <label for="release">Release Date</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err8"></p>
                     <input type="text" name="release" id="release" placeholder="Release Date" required>
                 </center>
 
                 <label for="restriction">Age Restriction</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err9"></p>
                     <input type="text" name="restriction" id="restriction" placeholder="Age Restriction" required>
                 </center>
 
                 <label for="ram">RAM (Minimum Requirement)</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err10"></p>
                     <input type="text" name="ram" id="ram" required>
                 </center>
 
                 <label for="storage">Storage (Minimum Requirement)</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err11"></p>
                     <input type="text" name="storage" id="storage" required>
                 </center>
 
                 <label for="processor">CPU (Minimum Requirement)</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err12"></p>
                     <input type="text" name="processor" id="processor" required>
                 </center>
 
                 <label for="gpu">GPU (Minimum Requirement)</label>
                 <center>
+                    <p style="color: red; margin-top: 10px;" id="err13"></p>
                     <input type="text" name="gpu" id="gpu" required>
                 </center>
 
                 <label for="Images">Poster</label>
                 <center>
-                    <input type="file" name="poster" id="images" accept="image/*" required>
-                </center>
-                <label for="Images">Images</label>
-                <input type="file" name="images" id="images" style="width: 24%; margin-left: 25%; float: left;"
-                    accept="image/*" required>
-                <input type="file" name="images" id="images"
-                    style="width: 24%; float: left; margin-left: 2%; margin-right: 25%;" accept="image/*" required>
-                <input type="file" name="images" id="images"
-                    style=" float: left; width: 24%; margin-left: 25%; margin-top: 20px;" accept="image/*" required>
-                <input type="file" name="images" id="images"
-                    style="width: 24%; float: left; margin-left: 2%; margin-right: 25%; margin-top: 20px;"
-                    accept="image/*" required>
+                    <p style="color: red; margin-top: 10px;" id="err14"></p>
+                    <input type="file" name="poster" id="poster" accept="image/*" required>
+                    <button type="button" class="btn btn-success p-2 px-5 border-2 mt-2"
+                        onclick="loadImage('poster')">Crop</button>
+                    <img src="" id="showposter" style="width: auto; height: 250px; margin-top: 20px ; display: block;"
+                        alt="">
 
+                    <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                        id="saveposter" onclick="uploadCroppedImage('poster')">Save</button>
+
+                    <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                        id="cancelposter">Cancel</button>
+
+
+                    <label for="Images" style="float: left;">Images</label>
+
+                    <p style="color: red; margin-top: 10px;" id="err15"></p>
+                    <input type="file" name="images" style=" margin-top: 20px;" id="Img1" accept="image/*" required>
+                    <button type="button" class="btn btn-success p-2 px-5 border-2 mt-2"
+                        onclick="loadImage('Img1')">Crop</button>
+
+                    <img src="" id="showImg1" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+
+                    <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                        id="saveImg1" onclick="uploadCroppedImage('Img1')">Save</button>
+
+                    <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                        id="cancelImg1">Cancel</button>
+
+                    <p style="color: red; margin-top: 10px;" id="err16"></p>
+                    <input type="file" name="images" style=" margin-top: 20px;" id="Img2" accept="image/*" required>
+                    <button type="button" class="btn btn-success p-2 px-5 border-2 mt-2"
+                        onclick="loadImage('Img2')">Crop</button>
+
+                    <img src="" id="showImg2" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+
+                    <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                        id="saveImg2" onclick="uploadCroppedImage('Img2')">Save</button>
+
+                    <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                        id="cancelImg2">Cancel</button>
+
+                    <p style="color: red; margin-top: 10px;" id="err17"></p>
+                    <input type="file" name="images" id="Img3" style=" margin-top: 20px;" accept="image/*" required>
+                    <button type="button" class="btn btn-success p-2 px-5 border-2 mt-2"
+                        onclick="loadImage('Img3')">Crop</button>
+
+                    <img src="" id="showImg3" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+
+                    <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                        id="saveImg1" onclick="uploadCroppedImage('Img3')">Save</button>
+
+                    <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                        id="cancelImg3">Cancel</button>
+
+                    <p style="color: red; margin-top: 10px;" id="err18"></p>
+                    <input type="file" name="images" id="Img4" style=" margin-top: 20px;" accept="image/*" required>
+                    <button type="button" class="btn btn-success p-2 px-5 border-2 mt-2"
+                        onclick="loadImage('Img4')">Crop</button>
+
+                    <img src="" id="showImg4" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+
+                    <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                        id="saveImg4" onclick="uploadCroppedImage('Img4')">Save</button>
+
+                    <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                        id="cancelImg4">Cancel</button>
+                </center>
 
                 <center>
                     <button type="submit" class="addProductButton">Upload</button>
@@ -126,96 +200,180 @@
 
             <% } else if (games!=null) { %>
 
-                <form onsubmit="return alertWindow()" action="/admin/update" id="updateProductForm"
+                <form action="/admin/update" id="updateProductForm"
                     style="padding-top: 50px; padding-bottom: 50px; background: black;" method="post"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" onsubmit="return updateValidation()">
                     <input type="hidden" name="id" value="<%= games._id %>">
                     <label for="name">Name</label>
                     <center>
-                        <input type="text" value="<%= games.name %>" name="name" id="name" required>
+                        <input type="text" value="<%= games.name %>" name="name" id="name">
+                        <p style="color: red; margin-top: 10px;" id="err1"></p>
                     </center>
                     <label for="dropdown">Visible</label>
                     <center>
-                        <select id="dropdown" name="visible">
-                            <option value="true" <%= (games.visible === true) ? 'selected' : '' %>>true</option>
-                            <option value="false" <%= (games.visible === false) ? 'selected' : '' %>>false</option>
+                        <select id="visible" name="visible">
+                            <option value="true" <%=(games.visible===true) ? 'selected' : '' %>>true</option>
+                            <option value="false" <%=(games.visible===false) ? 'selected' : '' %>>false</option>
                         </select>
+                        <p style="color: red; margin-top: 10px;" id="err19"></p>
                     </center>
 
                     <label for="genre">Genre</label>
                     <center>
                         <input type="text" name="genre" value="<%= games.genre %>" placeholder="Genre" id="genre"
                             required>
+                        <p style="color: red; margin-top: 10px;" id="err9"></p>
                     </center>
 
                     <label for="about">About</label>
                     <center>
                         <textarea name="about" id="about" placeholder="About the Game" cols="30" rows="10"
                             required><%= games.about %></textarea>
+                        <p style="color: red; margin-top: 10px;" id="err3"></p>
                     </center>
 
-                    <label for="price">Price</label>
+                    <label for="price">Base Price</label>
                     <center>
-                        <input type="number" name="price" value="<%= games.price %>" id="price" placeholder="Price"
-                            required>
+                        <input type="number" name="withoutDiscount" value="<%= games.withoutDiscount %>" id="price"
+                            placeholder="Price" required>
+                        <p style="color: red; margin-top: 10px;" id="err4"></p>
+                    </center>
+
+                    <label for="price">Discount Percentage</label>
+                    <center>
+                        <input type="number" name="discount" value="<%= games.discount %>" id="discount"
+                            placeholder="Price" required>
+                        <p style="color: red; margin-top: 10px;" id="err5"></p>
                     </center>
 
                     <label for="version">Version</label>
                     <center>
                         <input type="text" name="version" value="<%= games.description.version %>" id="version"
                             placeholder="Version" required>
+                        <p style="color: red; margin-top: 10px;" id="err6"></p>
                     </center>
 
                     <label for="production">Production</label>
                     <center>
                         <input type="text" name="production" value="<%= games.description.production %>" id="production"
                             placeholder="Produced by" required>
+                        <p style="color: red; margin-top: 10px;" id="err7"></p>
                     </center>
 
                     <label for="release">Release Date</label>
                     <center>
                         <input type="text" name="release" value="<%= games.description.release %>" id="release"
                             placeholder="Release Date" required>
+                        <p style="color: red; margin-top: 10px;" id="err8"></p>
                     </center>
 
                     <label for="restriction">Age Restriction</label>
                     <center>
                         <input type="text" name="restriction" value="<%= games.description.restriction %>"
                             id="restriction" placeholder="Age Restriction" required>
+                        <p style="color: red; margin-top: 10px;" id="err9"></p>
                     </center>
 
                     <label for="ram">RAM (Minimum Requirement)</label>
                     <center>
                         <input type="text" value="<%= games.description.minimumRequirements.ram %>" name="ram" id="ram"
                             required>
+                        <p style="color: red; margin-top: 10px;" id="err10"></p>
                     </center>
 
                     <label for="storage">Storage (Minimum Requirement)</label>
                     <center>
                         <input type="text" value="<%= games.description.minimumRequirements.storage %>" name="storage"
                             id="storage" required>
+                        <p style="color: red; margin-top: 10px;" id="err11"></p>
                     </center>
 
                     <label for="processor">CPU (Minimum Requirement)</label>
                     <center>
                         <input type="text" value="<%= games.description.minimumRequirements.processor %>"
                             name="processor" id="processor" required>
+                        <p style="color: red; margin-top: 10px;" id="err12"></p>
                     </center>
 
                     <label for="gpu">GPU (Minimum Requirement)</label>
                     <center>
                         <input type="text" name="gpu" value="<%= games.description.minimumRequirements.gpu %>" id="gpu"
                             required>
+                        <p style="color: red; margin-top: 10px;" id="err13"></p>
                     </center>
 
                     <label for="Images">Poster</label>
+
                     <center>
-                        <img src="<%= games.poster %>" alt="" style="width: 100px;">
+                        <p style="color: red; margin-top: 10px;" id="err14"></p>
+                        <input type="file" name="image" id="file-upload_<%= games.poster %>" placeholder="" value=""
+                            accept="image/*" onchange="toggleButton('<%= games.poster %>')">
+                        <img src="<%= games.poster %>" id="show_<%= games.poster %>"
+                            style="width: auto; height: 250px; margin-top: 20px; display: block;" alt="">
+                        <center>
+                            <button type="button" onclick="uploadBannerImage('<%= games.poster %>')"
+                                class="btn btn-success p-2 px-5 d-block" id="update-button_<%= games.poster %>"
+                                style="display: none; margin-top: 10px;">Update</button>
+                        </center>
                     </center>
+
+                    <label for="Images">Image 1</label>
                     <center>
-                        <input type="file" name="images" id="images" placeholder="<%= games.poster %>"
-                            value="<%= games.poster %>" accept="image/*">
+                        <p style="color: red; margin-top: 10px;" id="err15"></p>
+                        <input type="file" class="file-upload" id="file-upload_<%= games.image[0] %>" name="image"
+                            accept="image/*" onchange="toggleButton('<%= games.image[0] %>')">
+                        <img src="<%= games.image[0] %>" id="show_<%= games.image[0] %>"
+                            style="width: auto; height: 250px; margin-top: 20px; display: block;" alt="">
+                        <center>
+                            <button type="button" onclick="uploadBannerImage('<%= games.image[0] %>')"
+                                class="btn btn-success p-2 px-5 d-block" id="update-button_<%= games.image[0] %>"
+                                style="display: none; margin-top: 10px;">Update</button>
+                        </center>
                     </center>
+                    <label for="Images">Image 2</label>
+                    <center>
+                        <p style="color: red; margin-top: 10px;" id="err16"></p>
+                        <input type="file" class="file-upload" id="file-upload_<%= games.image[1] %>" name="image"
+                            accept="image/*" onchange="toggleButton('<%= games.image[1] %>')">
+                        <img src="<%= games.image[1] %>" id="show_<%= games.image[1] %>"
+                            style="width: auto; height: 250px; margin-top: 20px; display: block;" alt="">
+                        <center>
+                            <button type="button" onclick="uploadBannerImage('<%= games.image[1] %>')"
+                                class="btn btn-success p-2 px-5 d-block" id="update-button_<%= games.image[1] %>"
+                                style="display: none; margin-top: 10px;">Update</button>
+                        </center>
+                    </center>
+                    <label for="Images">Image 3</label>
+                    <center>
+                        <p style="color: red; margin-top: 10px;" id="err17"></p>
+                        <input type="file" class="file-upload" id="file-upload_<%= games.image[2] %>" name="image"
+                            accept="image/*" onchange="toggleButton('<%= games.image[2] %>')">
+                        <img src="<%= games.image[2] %>" id="show_<%= games.image[2] %>"
+                            style="width: auto; height: 250px; margin-top: 20px ; display: block;" alt="">
+                        <center>
+                            <button type="button" onclick="uploadBannerImage('<%= games.image[2] %>')"
+                                class="btn btn-success p-2 px-5 d-block" id="update-button_<%= games.image[2] %>"
+                                style="display: none; margin-top: 10px;">Update</button>
+                        </center>
+
+                    </center>
+
+
+                    <label for="Images">Image 4</label>
+                    <center>
+                        <p style="color: red; margin-top: 10px;" id="err18"></p>
+                        <input type="file" class="file-upload" id="file-upload_<%= games.image[3] %>" name="image"
+                            accept="image/*" onchange="toggleButton('<%= games.image[3] %>')">
+                        <img src="<%= games.image[3] %>" id="show_<%= games.image[3] %>"
+                            style="width: auto; height: 250px; margin-top: 20px; display: block;" alt="">
+                        <center>
+                            <button type="button" onclick="uploadBannerImage('<%= games.image[3] %>')"
+                                class="btn btn-success p-2 px-5 d-block" id="update-button_<%= games.image[3] %>"
+                                style="display: none; margin-top: 10px;">Update</button>
+                        </center>
+                    </center>
+
+
                     <center>
                         <button type="submit" class="addProductButton">Upload</button>
                     </center>
@@ -251,8 +409,12 @@
                             padding-left: 20px;
                         }
 
+                        textarea::placeholder {
+                            color: #000;
+                        }
+
                         input::placeholder {
-                            color: aqua;
+                            color: black;
                         }
 
                         label {
@@ -263,26 +425,270 @@
                             font-weight: 500;
                             align-self: center;
                         }
+
+                        .file-upload {
+                            margin-top: 30px;
+                            display: block;
+                        }
                     </style>
                     <script>
-                        function alertWindow() {
-                            Swal.fire({
+                        let cropper;
+
+                        const updateProductForm = document.getElementById('updateProductForm');
+                        updateProductForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            let result = await Swal.fire({
                                 title: 'Do you want to save the changes?',
                                 showDenyButton: true,
                                 showCancelButton: true,
                                 confirmButtonText: 'Save',
                                 denyButtonText: `Don't save`,
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    Swal.fire('Saved!', '', 'success')
-                                    return true;
-                                } else if (result.isDenied) {
-                                    Swal.fire('Changes are not saved', '', 'info')
-                                    return false;
+                            });
+                            if (result.isConfirmed) {
+                                await Swal.fire('Saved!', '', 'success');
+                                updateProductForm.submit();
+                            } else if (result.isDenied) {
+                                await Swal.fire('Changes are not saved', '', 'info');
+                            }
+                        });
+
+
+
+
+                        function loadImage(id) {
+                            alert('vannu')
+                            const input = document.getElementById(id);
+                            alert(input)
+                            const canvas = document.getElementById(`show${id}`);
+                            console.log(canvas);
+                            const file = input.files[0];
+                            console.log(file)
+
+                            if (file) {
+                                const reader = new FileReader();
+
+                                reader.onload = function (e) {
+                                    canvas.src = e.target.result;
+                                    document.getElementById(`save${id}`).style.display = 'block'
+                                    document.getElementById(`cancel${id}`).style.display = 'block'
+                                    if (cropper) {
+                                        cropper.destroy();
+                                    }
+
+                                    cropper = new Cropper(canvas, {
+                                        viewMode: 2,
+                                    });
+                                };
+
+                                reader.readAsDataURL(file);
+                            } else {
+                                canvas.src = '';
+                                if (cropper) {
+                                    cropper.destroy();
                                 }
-                            })
+                            }
                         }
+
+                        function uploadCroppedImage(id) {
+                            const canvas = cropper.getCroppedCanvas();
+                            if (canvas) {
+                                canvas.toBlob((blob) => {
+                                    const fileName = 'cropped_image.jpg';
+                                    const file = new File([blob], fileName, { type: 'image/jpeg' });
+                                    const input = document.getElementById(id);
+
+                                    if (DataTransfer && FileList) {
+                                        const dataTransfer = new DataTransfer();
+                                        dataTransfer.items.add(file);
+                                        input.files = dataTransfer.files;
+                                    } else {
+                                        console.error('FileList and DataTransfer are not supported in this browser.');
+                                    }
+
+                                    const showImg = document.getElementById(`show${id}`);
+                                    showImg.src = URL.createObjectURL(blob);
+
+                                    cropper.destroy();
+                                    document.getElementById(`save${id}`).style.display = 'none';
+                                    document.getElementById(`cancel${id}`).style.display = 'none';
+                                });
+                            }
+                        }
+
+                        function cropBanner(id) {
+                            const input = document.getElementById('file-upload_' + id);
+                            const canvas = document.getElementById(`show_${id}`);
+                            const file = input.files[0];
+
+                            if (file) {
+                                const reader = new FileReader();
+
+                                reader.onload = function (e) {
+                                    canvas.src = e.target.result;
+                                    if (cropper) {
+                                        cropper.destroy();
+                                    }
+
+                                    cropper = new Cropper(canvas, {
+                                        viewMode: 2,
+                                    });
+                                };
+
+                                reader.readAsDataURL(file);
+                            } else {
+                                canvas.src = '';
+                                if (cropper) {
+                                    cropper.destroy();
+                                }
+                            }
+                        }
+
+                        function uploadBannerImage(id) {
+                            const canvas = cropper.getCroppedCanvas();
+                            let imageName = id.split('/products/')
+                            if (canvas) {
+                                canvas.toBlob((blob) => {
+                                    const fileName = imageName[1] + '';
+                                    const file = new File([blob], fileName, { type: 'image/jpeg' });
+                                    const input = document.getElementById('file-upload_' + id);
+
+                                    if (DataTransfer && FileList) {
+                                        const dataTransfer = new DataTransfer();
+                                        dataTransfer.items.add(file);
+                                        input.files = dataTransfer.files;
+                                    } else {
+                                        console.error('FileList and DataTransfer are not supported in this browser.');
+                                    }
+
+                                    const showImg = document.getElementById(`show_${id}`);
+                                    showImg.src = URL.createObjectURL(blob);
+
+                                    cropper.destroy();
+                                });
+                                document.getElementById('update-button_' + id).style.display = 'none'
+                            }
+                        }
+                        async function toggleButton(id) {
+                            await cropBanner(id)
+                            alert(id)
+                            document.getElementById('update-button_' + id).style.display = 'block';
+                        }
+
+                        function verifyData() {
+                            let verified = true
+                            if (document.getElementById('name').value === '') {
+                                document.getElementById('err1').innerHTML = 'Enter Product Name'
+                                verified = false
+                            }
+                            if (document.getElementById('genre').value === '') {
+                                document.getElementById('err2').innerHTML = 'Select genre'
+                                verified = false
+                            }
+                            if (document.getElementById('about').value === '') {
+                                document.getElementById('err3').innerHTML = 'Enter About Details'
+                                verified = false
+                            }
+                            let price = document.getElementById('price')
+                            if (price.value === '' || parseInt(price.value) < 1 ) {
+                                document.getElementById('err4').innerHTML = 'Enter Price Correctly'
+                                verified = false
+                            }
+                            let discount = document.getElementById('discount')
+                            if (discount.value === '' || parseInt(discount.value) > 40) {
+                                document.getElementById('err5').innerHTML = 'Enter Discount Correctly'
+                                verified = false
+                            }
+                            if (document.getElementById('version').value === '' || isNaN(document.getElementById('version').value) ) {
+                                document.getElementById('err6').innerHTML = 'Enter Version Details'
+                                verified = false
+                            }
+                            if (document.getElementById('production').value === '') {
+                                document.getElementById('err7').innerHTML = 'Enter Delevoped Company Name'
+                                verified = false
+                            }
+                            if (document.getElementById('release').value === '') {
+                                document.getElementById('err8').innerHTML = 'Enter Correct Date'
+                                verified = false
+                            }
+                            let restriction = document.getElementById('restriction').value
+                            let rest = restriction.split('')
+                            if ( restriction === '' || rest.length > 3 || isNaN(parseInt(rest[0])) || isNaN(parseInt(rest[1])) || rest[2] != '+') {
+                                document.getElementById('err9').innerHTML = 'Enter Age Restriction'
+                                verified = false
+                            }
+                            let ram = document.getElementById('ram').value
+                            let ramSplit = ram.split('')
+                            if (ram === '' || ramSplit.length > 5 ) {
+                                document.getElementById('err10').innerHTML = 'Enter Ram Required'
+                                verified = false
+                            }
+
+                            if (document.getElementById('storage').value === '') {
+                                document.getElementById('err11').innerHTML = 'Enter Storage Required'
+                                verified = false
+                            }
+
+                            if (document.getElementById('processor').value === '') {
+                                document.getElementById('err12').innerHTML = 'Enter Processor Requirements'
+                                verified = false
+                            }
+
+                            if (document.getElementById('gpu').value === '') {
+                                document.getElementById('err13').innerHTML = 'Enter Graphics Requirements'
+                                verified = false
+                            }
+
+                            if(document.getElementById('poster').files.length > 1) {
+                                document.getElementById('err14').innerHTML = 'Select Single Image'
+                                verified = false
+                            }
+
+                            if(document.getElementById('Img1').files.length > 1) {
+                                document.getElementById('err15').innerHTML = 'Select Single Image'
+                                verified = false
+                            }
+
+                            if(document.getElementById('Img2').files.length > 1) {
+                                document.getElementById('err16').innerHTML = 'Select Single Image'
+                                verified = false
+                            }
+
+                            if(document.getElementById('Img3').files.length > 1) {
+                                document.getElementById('err17').innerHTML = 'Select Single Image'
+                                verified = false
+                            }
+
+                            if(document.getElementById('Img4').files.length > 1) {
+                                document.getElementById('err18').innerHTML = 'Select Single Image'
+                                verified = false
+                            }
+
+                            if(verified===false) {
+                                return false
+                            } else {
+                                return true
+                            }
+                        }
+
+                        function updateValidation() {
+                            let verified = true
+                            if(!verifyData()) {
+                                verified = false
+                            }
+                            let listed = document.getElementById('visible').value
+                            if(listed!=true && listed!=false) {
+                                verified = false
+                            }
+
+                            if(verified === false) {
+                                return false
+                            } else {
+                                return true
+                            }
+                        }
+
                     </script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
                         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

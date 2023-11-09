@@ -1,0 +1,427 @@
+<%- include('adminHeader') %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <button class="btn btn-success border-2 border-white p-2 px-5" style="float: right; margin: 30px;"
+        data-bs-toggle="modal" data-bs-target="#exampleModal">Create Banners</button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable m-auto">
+            <div class="modal-content bg-dark">
+                <div class="modal-body">
+                    <center>
+                        <div class="heading-section">
+                            <h4><em>Add</em> Banners</h4>
+                        </div>
+                    </center>
+                    <form action="/admin/banners" enctype="multipart/form-data" method="post">
+                        <center>
+                            <select name="page" id="" class="couponBox">
+                                <option value="home">Home Page</option>
+                                <option value="product">Product Page</option>
+                            </select>
+
+                            <label for="" class="mt-3 d-block">Banner Text</label>
+                            <input type="text" name="offerString1" class="couponBox" required minlength="5">
+                            <label for="" class="mt-3 d-block">Banner String</label>
+                            <input type="text" name="offerString2" class="couponBox" required>
+                            <label for="" class="mt-3 d-block">Banner String</label>
+                            <input type="text" name="offerString3" class="couponBox" required>
+
+                            <label for="" class="mt-3 d-block">Add Carousel Image</label>
+                            <input type="file" accept="image/*" id="Img1" name="productCarousel" class="couponBox"
+                                required>
+
+                            <button type="button" class="btn btn-success p-2 px-5 border-2 mt-2"
+                                onclick="loadImage('Img1')">Crop</button>
+
+                            <img src="" id="showImg1" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+
+                            <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                                id="saveImg1" onclick="uploadCroppedImage('Img1')">Save</button>
+
+                            <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                                id="cancelImg1">Cancel</button>
+
+
+                            <label for="" class="mt-3 d-block">Coming Soon Poster</label>
+                            <input type="file" class="couponBox" accept="image/*" id="Img2" name="comingSoon" required>
+
+                            <button type="button" class="btn btn-success p-2 px-5 border-2 mt-2"
+                                onclick="loadImage('Img2')">Crop</button>
+
+                            <img src="" id="showImg2" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+
+                            <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2 " type="button"
+                                id="saveImg2" onclick="uploadCroppedImage('Img2')">Save</button>
+
+                            <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                                id="cancelImg2">Cancel</button>
+
+
+
+                            <label for="" class="mt-3 d-block">Offer Banner</label>
+                            <input type="file" class="couponBox" accept="image/*" id="Img3" name="offerBanner" required>
+
+                            <button type="button" class="btn btn-success p-2 px-5 border-2 mt-2"
+                                onclick="loadImage('Img3')">Crop</button>
+
+                            <img src="" id="showImg3" style="width: auto; height: 250px; margin-top: 20px;" alt="">
+
+                            <button style="display: none;" class="btn btn-warning p-2 px-5 border-2 mt-2" type="button"
+                                id="saveImg3" onclick="uploadCroppedImage('Img3')">Save</button>
+
+                            <button style="display: none;" class="btn btn-danger p-2 px-5 border-2 mt-2" type="button"
+                                id="cancelImg3">Cancel</button>
+
+
+
+
+                            <button class="btn btn-success p-2 px-5 mt-3"
+                                style="height: 50px; width: 80%; display: block;">Submit</button>
+                        </center>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-xs-12">
+                <% banners.forEach((banner)=>{ %>
+                    <div class="page-content">
+                        <center>
+                            <div class="heading-section">
+                                <h4><em>
+                                        <%= (banner.page==='home' ) ? 'Home ' : 'Product' %>
+                                    </em>Page </h4>
+                            </div>
+                        </center>
+                        <div class="heading-section">
+                            <h4><em>
+                                    Offer
+                                </em>Banner </h4>
+                        </div>
+                        <img src="/banners/<%= banner.offerbanner %>" style="width: 300px;" alt="">
+                        <form action="/admin/updateBanner" method="post" enctype="multipart/form-data">
+                            <input type="file" class="file-upload" id="file-upload_<%= banner.offerbanner %>"
+                                name="image" accept="image/*" onchange="toggleButton('<%= banner.offerbanner %>')">
+                            <input type="hidden" name="Value" value="<%= banner.offerbanner %>">
+                            <img src="" id="show_<%= banner.offerbanner %>" alt="">
+                            <center>
+                                <button type="button" onclick="uploadBannerImage('<%= banner.offerbanner %>')"
+                                    class="btn btn-success p-2 px-5 update-button"
+                                    id="update-button_<%= banner.offerbanner %>"
+                                    style="display: none; margin-top: 10px;">Update</button>
+                                <button type="submit" class="btn btn-success p-2 px-5 update-button"
+                                    id="upload-button_<%= banner.offerbanner %>"
+                                    style="display: none; margin-top: 10px;">Upload</button>
+                            </center>
+                        </form>
+
+                        <center>
+                            <div class="heading-section" style="margin-top: 50px;">
+                                <h4><em>
+                                        coming Soon
+                                    </em>Posters </h4>
+                            </div>
+                        </center>
+
+                        <% banner.comingSoon.forEach((coming)=> { %>
+                            <img src="/banners/<%= coming %>" style="margin-top: 30px; width: 300px;" alt="" srcset="">
+                            <form action="/admin/updateBanner" method="post" enctype="multipart/form-data">
+                                <input type="file" class="file-upload" id="file-upload_<%= coming %>" name="image"
+                                    accept="image/*" onchange="toggleButton('<%= coming %>')">
+                                <img src="" id="show_<%= coming %>" alt="">
+                                <center>
+                                    <button type="button" onclick="uploadBannerImage('<%= coming %>')"
+                                        class="btn btn-success p-2 px-5 update-button" id="update-button_<%= coming %>"
+                                        style="display: none; margin-top: 10px;">Update</button>
+                                    <button type="submit" class="btn btn-success p-2 px-5 update-button"
+                                        id="upload-button_<%= coming %>"
+                                        style="display: none; margin-top: 10px;">Upload</button>
+                                </center>
+                            </form>
+                            <% }) %>
+                                <center>
+                                    <label for="Add More" style="color: white ; font-size: 20px; margin-top: 50px;">Add Another Image</label>
+                                    <form action="/admin/newBanner" method="post" enctype="multipart/form-data">
+                                        <input type="file" class="file-upload"
+                                            id="file-upload_<%= banner._id %>" name="image" accept="image/*"
+                                            onchange="toggleButton('<%= banner._id %>')">
+                                        <input type="hidden" name="change" value="comingSoon">
+                                        <input type="hidden" name="page" value="<%= banner.page %>">
+                                        <img src="" id="show_<%= banner._id %>" alt="">
+                                        <center>
+                                            <button type="button"
+                                                onclick="uploadBannerImage('<%= banner._id %>')"
+                                                class="btn btn-success p-2 px-5 update-button"
+                                                id="update-button_<%= banner._id %>"
+                                                style="display: none; margin-top: 10px;">Update</button>
+                                            <button type="submit" class="btn btn-success p-2 px-5 update-button"
+                                                id="upload-button_<%= banner._id %>"
+                                                style="display: none; margin-top: 10px;">Upload</button>
+                                        </center>
+                                    </form>
+                                </center>
+
+                                <center>
+                                    <div class="heading-section" style="margin-top: 50px;">
+                                        <h4><em>
+                                                Carousel
+                                            </em>Images </h4>
+                                    </div>
+                                </center>
+
+                                <% banner.productCarousel.forEach((coming)=> { %>
+                                    <img src="/banners/<%= coming %>" style="margin-top: 30px; width: 300px;" alt="" srcset="">
+                                    <form action="/admin/updateBanner" method="post" enctype="multipart/form-data">
+                                        <input type="file" class="file-upload" id="file-upload_<%= coming %>" name="image"
+                                            accept="image/*" onchange="toggleButton('<%= coming %>')">
+                                        <img src="" id="show_<%= coming %>" alt="">
+                                        <center>
+                                            <button type="button" onclick="uploadBannerImage('<%= coming %>')"
+                                                class="btn btn-success p-2 px-5 update-button" id="update-button_<%= coming %>"
+                                                style="display: none; margin-top: 10px;">Update</button>
+                                            <button type="submit" class="btn btn-success p-2 px-5 update-button"
+                                                id="upload-button_<%= coming %>"
+                                                style="display: none; margin-top: 10px;">Upload</button>
+                                        </center>
+                                    </form>
+                                    <% }) %>
+                                        <center>
+                                            <label for="Add More" style="color: white ; font-size: 20px; margin-top: 50px;">Add Another Image</label>
+                                            <form action="/admin/newBanner" method="post" enctype="multipart/form-data">
+                                                <input type="file" class="file-upload"
+                                                    id="file-upload_productCarousel" name="image" accept="image/*"
+                                                    onchange="toggleButton('productCarousel')">
+                                                <input type="hidden" name="change" value="productCarousel">
+                                                <input type="hidden" name="page" value="<%= banner.page %>">
+                                                <img src="" id="show_productCarousel" alt="">
+                                                <center>
+                                                    <button type="button"
+                                                        onclick="uploadBannerImage('productCarousel')"
+                                                        class="btn btn-success p-2 px-5 update-button"
+                                                        id="update-button_productCarousel"
+                                                        style="display: none; margin-top: 10px;">Update</button>
+                                                    <button type="submit" class="btn btn-success p-2 px-5 update-button"
+                                                        id="upload-button_productCarousel"
+                                                        style="display: none; margin-top: 10px;">Upload</button>
+                                                </center>
+                                            </form>
+                                        </center>
+        
+
+                    </div>
+                    <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .couponBox {
+            width: 100%;
+            background: #333;
+            color: white;
+            height: 50px;
+            padding: 8px;
+            padding-left: 20px;
+            border-radius: 10px;
+            border: 1px solid white;
+        }
+
+        .custom-file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-upload-label {
+            background-color: #007bff;
+            color: white;
+            float: left;
+            padding: 10px;
+            padding-left: 12px;
+            padding-right: 12px;
+            padding-bottom: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .update-button {
+            color: white;
+            border-radius: 10px;
+        }
+
+
+
+        .updateProfile {
+            background: rgba(51, 51, 51, 0.5);
+            width: 60%;
+            width: 60%;
+            height: 250px;
+            margin-left: 5%;
+            margin-top: 12px;
+        }
+
+        .updateinput {
+            background: transparent;
+            color: antiquewhite;
+            border: 0;
+            border-bottom: 2px solid red;
+            width: 90%;
+            margin-left: 5%;
+            margin-top: 10px;
+            height: 50px;
+            font-size: 18px;
+            padding: 0;
+            padding-left: 30px;
+        }
+
+        .updateinput::placeholder {
+            color: aqua;
+        }
+
+        .updateButton {
+            border-radius: 10px;
+            width: 80%;
+            margin-left: 10%;
+            margin-top: 30px;
+            height: 50px;
+            background: transparent;
+            color: aqua;
+            transition: 0.5s;
+            font-size: 18px;
+        }
+
+        .updateButton:hover {
+            background: aqua;
+            color: #000;
+        }
+    </style>
+    <script>
+        let cropper;
+        function loadImage(id) {
+            const input = document.getElementById(id);
+            const canvas = document.getElementById(`show${id}`);
+            const file = input.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    canvas.src = e.target.result;
+                    document.getElementById(`save${id}`).style.display = 'block'
+                    document.getElementById(`cancel${id}`).style.display = 'block'
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropper = new Cropper(canvas, {
+                        viewMode: 2,
+                    });
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                canvas.src = '';
+                if (cropper) {
+                    cropper.destroy();
+                }
+            }
+        }
+
+        function uploadCroppedImage(id) {
+            const canvas = cropper.getCroppedCanvas();
+            alert(canvas)
+            if (canvas) {
+                canvas.toBlob((blob) => {
+                    const fileName = 'cropped_image.jpg';
+                    const file = new File([blob], fileName, { type: 'image/jpeg' });
+                    const input = document.getElementById(id);
+
+                    if (DataTransfer && FileList) {
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        input.files = dataTransfer.files;
+                    } else {
+                        console.error('FileList and DataTransfer are not supported in this browser.');
+                    }
+
+                    const showImg = document.getElementById(`show${id}`);
+                    showImg.src = URL.createObjectURL(blob);
+
+                    cropper.destroy();
+                    document.getElementById(`save${id}`).style.display = 'none';
+                    document.getElementById(`cancel${id}`).style.display = 'none';
+                });
+            }
+        }
+
+
+
+        function cropBanner(id) {
+            const input = document.getElementById('file-upload_' + id);
+            const canvas = document.getElementById(`show_${id}`);
+            const file = input.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    canvas.src = e.target.result;
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    cropper = new Cropper(canvas, {
+                        viewMode: 2,
+                    });
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                canvas.src = '';
+                if (cropper) {
+                    cropper.destroy();
+                }
+            }
+        }
+
+        function uploadBannerImage(id) {
+            const canvas = cropper.getCroppedCanvas();
+            if (canvas) {
+                canvas.toBlob((blob) => {
+                    const fileName = id;
+                    const file = new File([blob], fileName, { type: 'image/jpeg' });
+                    const input = document.getElementById('file-upload_' + id);
+
+                    if (DataTransfer && FileList) {
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        input.files = dataTransfer.files;
+                    } else {
+                        console.error('FileList and DataTransfer are not supported in this browser.');
+                    }
+
+                    const showImg = document.getElementById(`show_${id}`);
+                    showImg.src = URL.createObjectURL(blob);
+
+                    cropper.destroy();
+                });
+                document.getElementById('update-button_' + id).style.display = 'none'
+                document.getElementById('upload-button_' + id).style.display = 'block'
+            }
+        }
+        async function toggleButton(id) {
+            await cropBanner(id)
+            document.getElementById('update-button_' + id).style.display = 'block';
+        }
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/adminFrontend.js"></script>
+    </body>
+
+    </html>
