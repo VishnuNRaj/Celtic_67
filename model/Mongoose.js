@@ -4,6 +4,10 @@ require('dotenv').config();
 mongoose.connect(process.env.MONGO, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  ssl:true,
+  tlsAllowInvalidCertificates:true
+}).then(()=>{
+  console.log('Connected to Mongo DB');
 })
 
 const { userSchema } = require('./userSchema')
