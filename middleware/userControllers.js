@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const { log } = require('console')
 const { User, Products, Category, Banner } = require('../model/Mongoose')
 const { sentOtp } = require('../model/Mailer')
-const { findUsingId, findUsingEmail, getData } = require('./commonFunctions')
+const { findUsingId, findUsingEmail, getData, inserter } = require('./commonFunctions')
 
 const login = (req, res, next) => {
     try {
@@ -100,11 +100,12 @@ const signUpVerify = async (req, res, next) => {
 const otpVerify = async (req, res, next) => {
     try {
         let data = req.body
-        log(req.body)
+        log(req.body.email)
         if (req.body.signUpOtp) {
             if (req.session.otp != null) {
                 if (req.session.otp === req.body.signUpOtp) {
                     data.password = await bcrypt.hash(data.password, 10)
+                    await inserter(User,data)
                     req.session.user = req.body.email;
                     req.session.otp = null
                     res.status(200).json({ status: true })
