@@ -13,42 +13,7 @@
 </head>
 
 <body>
-  <div class="pull-right toggle-right-sidebar">
-    <span class="fa title-open-right-sidebar tooltipstered fa-angle-double-right"></span>
-  </div>
-
-  <div id="right-sidebar" class="right-sidebar-notifcations nav-collapse">
-    <div class="bs-example bs-example-tabs right-sidebar-tab-notification" data-example-id="togglable-tabs">
-
-      <div id="w3lDemoBar" class="w3l-demo-bar">
-        <div class="demo-btns">
-          <a href="/">
-            <span class="w3l-icon -back">
-              <span class="fa fa-home"></span>
-            </span>
-            <span class="w3l-text">Home</span>
-          </a>
-          <a href="/newUser">
-            <span class="w3l-icon -download">
-              <span class="fa fa-sign-in"></span>
-            </span>
-            <span class="w3l-text">Sign Up</span>
-          </a>
-          <a href="/password" class="no-margin-bottom-mobile">
-            <span class="w3l-icon -buy">
-              <span class="fa fa-key"></span>
-            </span>
-            <span class="w3l-text">Forgot<br>Password</span>
-          </a>
-        </div>
-
-      </div>
-      <div class="right-sidebar-panel-content animated fadeInRight" tabindex="5003"
-        style="overflow: hidden; outline: none;">
-      </div>
-    </div>
-  </div>
-
+  
 
   <div class="padding-all">
     <div class="header">
@@ -66,11 +31,11 @@
         </center>
         <form action="#" method="post" onsubmit="return false">
           <center>
-            <p id="errorShow" style="color: red;"></p>
+            <p id="errorShow" style="color: red;"><%= err %></p>
           </center>
           <input type="text" id="namebox" name="name" placeholder="Enter name...">
-          <input type="text" id="userbox" name="name" placeholder="Enter username...">
-          <input type="text" id="mailbox" name="name" placeholder="Enter email...">
+          <input type="text" id="userbox" name="username" placeholder="Enter username...">
+          <input type="text" id="mailbox" name="email" placeholder="Enter email...">
           <input type="password" id="Pass" name="password" class="padding" style="width: 80%;" placeholder="Password">
           <button class="Eyebtn" onclick="Eyefunc()" type="button">
             <i id="logo" class="fa fa-eye-slash"></i>

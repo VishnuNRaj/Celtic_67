@@ -408,7 +408,7 @@ async function signUpOtpVerify() {
             username: username,
             email: email,
             password: password,
-            loginOtp: passwordOtp
+            signUpOtp: passwordOtp
         }
         let response = await fetch('/otp', {
             method: 'POST',

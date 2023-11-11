@@ -33,6 +33,7 @@ const login = (req, res, next) => {
 
 const userHome = async (req, res, next) => {
     try {
+        console.log(req.session.user);
         const featured = await getData(Products, { visible: true }, { _id: -1 }, 0, 4)
         const trending = await getData(Products, { visible: true }, { downloads: -1 }, 0, 4)
         const banners = await Banner.findOne({ page: 'home' })
@@ -105,7 +106,7 @@ const otpVerify = async (req, res, next) => {
             if (req.session.otp != null) {
                 if (req.session.otp === req.body.signUpOtp) {
                     data.password = await bcrypt.hash(data.password, 10)
-                    await inserter(User,data)
+                    await User.insertMany([data])
                     req.session.user = req.body.email;
                     req.session.otp = null
                     res.status(200).json({ status: true })
