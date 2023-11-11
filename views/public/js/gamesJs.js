@@ -57,6 +57,10 @@ async function deleteFromWishlist(id, userId) {
 
 async function addtoCart(id, productId) {
     if (id === "") {
+        await Swal.fire(
+            'Please Login...!',
+            'Sorry'
+        )
         window.location.href = '/login'
     } else {
         let response = await fetch('/addtoCart', {
@@ -85,6 +89,10 @@ async function addtoCart(id, productId) {
 
 async function addtoCart2(id, productId) {
     if (id === "") {
+        await Swal.fire(
+            'Please Login...!',
+            'Sorry'
+        )
         window.location.href = '/login'
     } else {
         let response = await fetch('/addtoCart', {
@@ -112,6 +120,10 @@ async function addtoCart2(id, productId) {
 
 async function addtoWishlist(id, gameId) {
     if (id === "") {
+        await Swal.fire(
+            'Please Login...!',
+            'Sorry'
+        )
         window.location.href = '/login'
     } else {
         let response = await fetch('/wishlist', {
@@ -279,9 +291,6 @@ async function orderNow(userId, amount, productId, quantity, need) {
         let orderDetails = await response.json()
         await orderSuccess(userId, productId, orderDetails)
     } else if (response.status === 202) {
-        // alert(response.status)
-        // const modal = document.getElementById("walletModal");
-        // modal.style.display = "block"; 
         $("#walletModal").modal("show");
     } else if (response.status === 203) {
         await Swal.fire('Error!', 'Insufficient balance', 'Sorry!');

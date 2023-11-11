@@ -15,7 +15,10 @@ async function messageFetch() {
 }
 
 const adminHome = async (req, res, next) => {
+    console.log(req.session.admin);
+    console.log('vannu');
     if (req.session.admin) {
+        console.log('ivedind');
         let adminData = await findUsingEmail(Admin, req.session.admin)
         if (adminData) {
             const messages = await messageFetch()
@@ -32,7 +35,7 @@ const adminHome = async (req, res, next) => {
             delete month.orders
             delete month.mostDownloaded
             console.log(Weekly);
-            res.render('Admin/adminIndex', { Name: adminData.name, Email: adminData.email, messages, order ,month , yearly,Weekly})
+            res.render('Admin/adminIndex', { Name: adminData.name, Email: adminData.email, messages, order, month, yearly, Weekly })
         } else {
             req.session.adminnotfound = true
             res.redirect('/admin/login')
@@ -60,10 +63,15 @@ const adminLogin = (req, res, next) => {
 }
 
 function otpNull(req, res, next) {
-    setTimeout(() => {
-        console.log("Null aakeee");
-        req.session.adminOtp = null;
-    }, 1000 * 60)
+    try {
+        setTimeout(() => {
+            console.log("Null aakeee");
+            req.session.otp = null;
+        }, 120000)
+    } catch (e) {
+        console.error(e);
+        res.redirect('/admin')
+    }
 }
 
 
@@ -73,7 +81,7 @@ const adminVerification = async (req, res, next) => {
     if (adminData) {
         let passTrue = await bcrypt.compare(data.password, adminData.password)
         if (passTrue) {
-            req.session.adminOtp = await sentOtp(data.email)
+            req.session.otp = sentOtp(data.email)
             otpNull(req, res, next)
             res.status(200).json({ status: true })
         } else {
@@ -87,10 +95,14 @@ const adminVerification = async (req, res, next) => {
 
 const otpVerify = async (req, res, next) => {
     let data = req.body
-    if (req.session.adminOtp != null) {
-        if (req.session.adminOtp === data.loginOtp) {
+    console.log(typeof data.otp);
+    if (req.session.otp != null) {
+        console.log('keriee');
+        if (req.session.otp === data.otp) {
+            console.log('ethieee',data.email);
             req.session.admin = data.email
-            res.redirect('/admin')
+            console.log(req.session.admin);
+            res.redirect('/admin/')
         } else {
             req.session.otpError = true
             res.redirect('/admin/login')

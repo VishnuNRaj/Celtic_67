@@ -1,14 +1,4 @@
 
-
-
-function signIn() {
-    try {
-        window.location.href = '/newUser';
-    } catch (error) {
-        console.error('Error toggling user block:', error);
-    }
-}
-
 function Eyefunc() {
     let show = document.getElementById('Pass')
     let logo = document.getElementById('logo')
@@ -101,7 +91,7 @@ async function formVerify() {
         let password2 = document.getElementById('Pass2').value
         let data = {}
 
-        if(password === password2) {
+        if (password === password2) {
             if (nameVerify(name) && emailVerify(email) && usernameVerify(username) && passwordVerify(password)) {
                 data.name = name
                 data.email = email
@@ -117,8 +107,8 @@ async function formVerify() {
                     let otpBox = document.getElementById('otpBox');
                     signUpform.style.display = "none";
                     otpBox.style.display = "block";
-                    document.getElementById('timer').innerText = '60';
-                    setInterval(updateTimer, 1000);
+                    startTimer(2*60)
+                    resentShow()
                 } else if (response.status === 465) {
                     err.innerHTML = "Already a user please login";
                 } else if (response.status === 466) {
@@ -135,6 +125,12 @@ async function formVerify() {
     }
 }
 
+
+function resentShow() {
+    setTimeout(()=>{
+        document.getElementById('Resend').style.display = 'block'
+    },1000*60)
+}
 
 
 async function loginVerification() {
@@ -153,12 +149,12 @@ async function loginVerification() {
                 body: JSON.stringify(data),
             });
             if (response.status === 200) {
-                let signUpform = document.getElementById('loginMain')
+                let div = document.getElementById('loginMain')
+                div.style.display = 'none'
                 let otpBox = document.getElementById('otpBox')
-                signUpform.style.display = "none"
-                otpBox.style.display = "block"
-                document.getElementById('timer').innerText = '60';
-                setInterval(updateTimer, 1000);
+                startTimer(2 * 60);
+                otpBox.style.display = 'block'
+                resentShow()
             } else if (response.status === 468) {
                 err.innerHTML = "Incorrect password"
             } else if (response.status === 488) {
@@ -191,8 +187,7 @@ async function adminVerification() {
             let otpBox = document.getElementById('otpBox')
             signUpform.style.display = "none"
             otpBox.style.display = "block"
-            document.getElementById('timer').innerText = '60';
-            setInterval(updateTimer, 1000);
+            startTimer(2*60)
         } else if (response.status === 467) {
             err.innerHTML = "Password Incorrect"
         } else if (response.status === 465) {
@@ -228,12 +223,11 @@ async function passChangeVerification() {
         })
 
         if (response.status === 200) {
+            startTimer(2*60)
             let signUpform = document.getElementById('loginMain');
             let otpBox = document.getElementById('otpBox');
             signUpform.style.display = "none";
             otpBox.style.display = "block";
-            document.getElementById('timer').innerText = '60';
-            setInterval(updateTimer, 1000);
         } else {
             err.innerHTML = "No Email Found"
         }
@@ -261,14 +255,40 @@ async function forgotOtp() {
     }
 }
 
-function forgotPasswordVerify() {
+async function forgotPasswordVerify() {
     let pass1 = document.getElementById('Pass').value
     let pass2 = document.getElementById('Pass2').value
     let passError = document.getElementById('passError')
     if (pass1 === pass2) {
         if (pass1.length > 7) {
             if (passwordVerify(pass1)) {
-                return true
+                let email = document.getElementById('mailbox').value
+                let response = await fetch('/changePassword',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({email,password:pass1})
+                })
+                if(response.status === 204) {
+                    passError.innerHTML = 'Enter a new password'
+                } else if (response.status === 202) {
+                    await Swal.fire(
+                        'Password Changed Successfully...!',
+                        'Success'
+                    )
+                    location.href = '/profile'
+                } else if (response.status === 203) {
+                    await Swal.fire(
+                        'Password Changed Successfully...!',
+                        'Success'
+                    )
+                    location.href = '/login'
+                } else {
+                    await Swal.fire(
+                        'Error Changing Password ...!',
+                        'Sorry'
+                    )
+                    location.href = '/'
+                }
             } else {
                 passError.innerHTML = "Password should contain <br> Atleast 1 lowercase <br> 1 Uppercase <br> 1 Integer <br> 1 Special character (e.g., !, @, #, $, %, ^, &, *)"
                 return false
@@ -300,18 +320,22 @@ async function resending() {
 
 
 
-function updateTimer() {
+function startTimer(duration) {
+    let timer = duration;
     const timerElement = document.getElementById('timer');
-    let seconds = parseInt(timerElement.innerText);
-    let otpError = document.getElementById('otpError')
-    if (seconds <= 0) {
-        otpError.innerHTML = "Otp Expired"
-        clearInterval(timerInterval);
-        timerElement.innerText = '0';
-    } else {
-        seconds--;
-        timerElement.innerText = seconds;
-    }
+
+    const countdownInterval = setInterval(function () {
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+
+        timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        if (--timer < 0) {
+            clearInterval(countdownInterval);
+            timerElement.textContent = "Time's up!";
+            document.getElementById('otpError').innerHTML = 'OTP Expired'
+        }
+    }, 1000);
 }
 
 
@@ -327,6 +351,92 @@ async function resendingAdmin() {
         otpError.innerHTML = "Otp Sent Sucessfully"
         document.getElementById('timer').innerText = '60';
 
+    }
+}
+
+async function loginOtpVerify() {
+    let passwordOtp = document.getElementById('otp').value
+    let otpError = document.getElementById('otpError')
+    if (passwordOtp.length === 6 && !isNaN(passwordOtp)) {
+        let email = document.getElementById('mailbox').value
+        let password = document.getElementById('Pass').value
+        let data = {
+            email: email,
+            password: password,
+            loginOtp: passwordOtp
+        }
+        let response = await fetch('/loginOtp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        if (response.status === 200) {
+            await Swal.fire(
+                'Login Successfull Redirecting to Home Page...!',
+                'Success'
+            )
+            location.href = '/'
+        } else if (response.status === 202) {
+            document.getElementById('otpError').innerHTML = '!! Incorrect OTP !!'
+            await Swal.fire(
+                'Incorrect OTP...!',
+                'Error'
+            )
+        } else {
+            document.getElementById('otpError').innerHTML = '!! Incorrect OTP !!'
+            await Swal.fire(
+                'OTP Expired...!',
+                'Error'
+            )
+        }
+    } else {
+        otpError.innerHTML = "Enter Valid Otp"
+        return false
+    }
+}
+
+async function signUpOtpVerify() {
+    let passwordOtp = document.getElementById('otp').value
+    let otpError = document.getElementById('otpError')
+    if (passwordOtp.length === 6 && !isNaN(passwordOtp)) {
+        let email = document.getElementById('mailbox').value
+        let password = document.getElementById('Pass').value
+        let username = document.getElementById('userbox').value
+        let name = document.getElementById('namebox').value
+        let data = {
+            name: name,
+            username: username,
+            email: email,
+            password: password,
+            loginOtp: passwordOtp
+        }
+        let response = await fetch('/otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        if (response.status === 200) {
+            await Swal.fire(
+                'Registration Successfull Redirecting to Home Page...!',
+                'Success'
+            )
+            location.href = '/'
+        } else if (response.status === 202) {
+            document.getElementById('otpError').innerHTML = '!! Incorrect OTP !!'
+            await Swal.fire(
+                'Incorrect OTP...!',
+                'Error'
+            )
+        } else {
+            document.getElementById('otpError').innerHTML = '!! Incorrect OTP !!'
+            await Swal.fire(
+                'OTP Expired...!',
+                'Error'
+            )
+        }
+    } else {
+        otpError.innerHTML = "Enter Valid Otp"
+        return false
     }
 }
 

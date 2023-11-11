@@ -106,30 +106,25 @@ const otpVerify = async (req, res, next) => {
                 if (req.session.otp === req.body.signUpOtp) {
                     data.password = await bcrypt.hash(data.password, 10)
                     req.session.user = req.body.email;
-                    req.session.userInfo = await User.insertMany(data);
                     req.session.otp = null
-                    res.redirect('/');
+                    res.status(200).json({ status: true })
                 } else {
-                    req.session.otperror = true;
-                    res.redirect('/newUser')
+                    res.status(202).json({ status: true })
                 }
             } else {
-                req.session.otpTimeout = true
-                res.redirect('/newUser')
+                res.status(203).json({ status: true })
             }
         } else if (data.loginOtp) {
             if (req.session.otp != null) {
                 if (req.session.otp === data.loginOtp) {
                     req.session.otp = null
                     req.session.user = data.email
-                    res.redirect('/')
+                    res.status(200).json({ status: true })
                 } else {
-                    req.session.otperror = true;
-                    res.redirect('/login')
+                    res.status(202).json({ status: true })
                 }
             } else {
-                req.session.otpTimeout = true;
-                res.redirect('/login')
+                res.status(203).json({ status: true })
             }
         } else if (data.passwordOtp) {
             if (req.session.otp != null) {
@@ -162,7 +157,8 @@ function otpNull(req, res, next) {
     try {
         setTimeout(() => {
             req.session.otp = null;
-        }, 1000 * 60)
+            console.log('null aakee');
+        }, 120000)
     } catch (e) {
         res.redirect('/games')
     }
@@ -214,7 +210,7 @@ const games = async (req, res, next) => {
     const page = (req.session.page) ? req.session.page : 0
     const searchData = new RegExp('^' + req.session.searchKeyword, 'i');
     const genre = await getData(Category, {}, { _id: 1 }, 0, 0)
-    let userName = (req.session.user) ? await User.findOne({email:req.session.user},{_id:0,name:1}) : ''
+    let userName = (req.session.user) ? await User.findOne({ email: req.session.user }, { _id: 0, name: 1 }) : ''
     const featured = await getData(Products, { visible: true }, { downloads: -1 }, 0, 0)
     let gameData = []
     let length = 0
@@ -303,7 +299,7 @@ const afterUpload = (req, res, next) => {
 const logOut = async (req, res, next) => {
     try {
         let id = req.query.id
-        let userData = await findUsingId(User.id)
+        let userData = await findUsingId(User, id)
         if (userData && req.session.user === userData.email) {
             req.session.user = false
             res.redirect('/login')
@@ -339,12 +335,18 @@ const forgotPassword = (req, res, next) => {
 const changePassword = async (req, res, next) => {
     try {
         let data = req.body
-        data.password = await bcrypt.hash(data.password, 10)
-        await User.updateOne({ email: data.email }, { $set: { password: data.password } })
-        if (req.session.user) {
-            res.redirect('/profile')
+        let userData = await findUsingEmail(User, data.email)
+        if (bcrypt.compare(data.password, userData.password)) {
+            res.status(204).json({ status: true })
         } else {
-            res.redirect('/login')
+            data.password = await bcrypt.hash(data.password, 10)
+            userData.password = data.password
+            userData.save()
+            if (req.session.user) {
+                res.status(202).json({ status: true })
+            } else {
+                res.status(203).json({ status: true })
+            }
         }
     } catch (e) {
         console.error(e);

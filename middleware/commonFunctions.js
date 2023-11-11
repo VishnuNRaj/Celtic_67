@@ -57,4 +57,9 @@ async function inserter(db, data) {
 
 }
 
-module.exports = { findUsingEmail, findUsingId, getData, findOneData, findAndUpdate,inserter }
+async function findData(db,query) {
+    let data = await db.find(query)
+    return data
+}
+
+module.exports = { findUsingEmail, findUsingId, getData, findOneData, findAndUpdate,inserter,findData }

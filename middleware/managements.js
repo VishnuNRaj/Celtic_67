@@ -1,7 +1,8 @@
 const { User, Admin, Coupon, Category, Order, Message, Products, getDate, Banner } = require('../model/Mongoose')
 const { log, error } = require('console')
 const { refundOrder } = require('../model/payment')
-const { isObjectIdOrHexString, Aggregate } = require('mongoose')
+const { isObjectIdOrHexString, Aggregate } = require('mongoose');
+const { findData, getData, findUsingEmail } = require('./commonFunctions');
 
 async function messageFetch() {
     try {
@@ -210,14 +211,14 @@ async function monthly() {
                 $lt: currentDate,
             },
         });
-        const userData = await User.find();
+        const userData = await User.countDocuments()
         let month = {};
         month.orders = orders
         month.startDate = lastMonth
         month.endDate = currentDate
-        month.mostDownloaded = await Products.find({}).sort({ downloads: -1 }).limit(1)
+        month.mostDownloaded = await getData(Products, {}, { downloads: -1 }, 0, 1)
         month.count = orders.length;
-        month.average = (orders.length / userData.length) * 100;
+        month.average = (orders.length / userData) * 100;
         month.total = 0;
         month.products = 0;
 
@@ -228,7 +229,7 @@ async function monthly() {
             }, 0);
         });
         month.users = userData.length
-        month.totalproducts = (await Products.find()).length
+        month.totalproducts = (await findData(Products, {})).length
         return month;
 
     } catch (e) {
@@ -241,23 +242,24 @@ async function weekly() {
     try {
         const currentDate = getDate(0, false)
         const lastMonth = getDate(-7, false)
-        log(lastMonth, currentDate)
-        const orders = await Order.find({
+        const query = {
             status: 'Confirmed',
             paymentId: { $ne: 'Waiting for Payment' },
             orderDate: {
                 $gte: lastMonth,
                 $lt: currentDate,
             },
-        });
-        const userData = await User.find();
+        }
+
+        const orders = await findData(Order, query)
+        const userData = await User.countDocuments();
         let month = {};
         month.orders = orders
         month.startDate = lastMonth
         month.endDate = currentDate
-        month.mostDownloaded = await Products.find({}).sort({ downloads: -1 }).limit(1)
+        month.mostDownloaded = await getData(Products, {}, { downloads: -1 }, 0, 1)
         month.count = orders.length;
-        month.average = (orders.length / userData.length) * 100;
+        month.average = (orders.length / userData) * 100;
         month.total = 0;
         month.products = 0;
 
@@ -268,7 +270,7 @@ async function weekly() {
             }, 0);
         });
         month.users = userData.length
-        month.totalproducts = (await Products.find()).length
+        month.totalproducts = await Products.countDocuments()
         return month;
 
     } catch (e) {
@@ -282,22 +284,23 @@ async function Yearly() {
         const currentDate = getDate(0, false)
         const lastMonth = getDate(-365, false)
         log(lastMonth, currentDate)
-        const orders = await Order.find({
+        const query = {
             status: 'Confirmed',
             paymentId: { $ne: 'Waiting for Payment' },
             orderDate: {
                 $gte: lastMonth,
                 $lt: currentDate,
             },
-        });
-        const userData = await User.find();
+        }
+        const orders = await findData(Order, query)
+        const userData = await User.countDocuments();
         let month = {};
         month.orders = orders
         month.startDate = lastMonth
         month.endDate = currentDate
-        month.mostDownloaded = await Products.find({}).sort({ downloads: -1 }).limit(1)
+        month.mostDownloaded = await getData(Products, {}, { downloads: -1 }, 0, 1)
         month.count = orders.length;
-        month.average = (orders.length / userData.length) * 100;
+        month.average = (orders.length / userData) * 100;
         month.total = 0;
         month.products = 0;
 
@@ -308,7 +311,7 @@ async function Yearly() {
             }, 0);
         });
         month.users = userData.length
-        month.totalproducts = (await Products.find()).length
+        month.totalproducts = await Products.countDocuments()
         return month;
 
     } catch (e) {
@@ -317,25 +320,25 @@ async function Yearly() {
 }
 
 const banners = async (req, res, next) => {
-    const adminData = await Admin.findOne({ email: req.session.admin })
+    const adminData = await findUsingEmail(Admin,req.session.admin)
     const messages = await messageFetch()
     const banners = await Banner.find()
     res.render('Admin/banners', { Name: adminData.name, Email: adminData.email, banners, messages })
 }
 
-const addBanner = async (req,res,next) => {
+const addBanner = async (req, res, next) => {
     let data = {
-        offerString1:req.body.offerString1,
-        offerString2:req.body.offerString2,
-        offerString3:req.body.offerString3,
-        offerbanner:'/banners/'+ req.session.offerBanner,
-        comingSoon:'/banners/'+ req.session.comingSoon,
-        productCarousel:'/banners/'+ req.session.productCarousel,
-        page:req.body.page
+        offerString1: req.body.offerString1,
+        offerString2: req.body.offerString2,
+        offerString3: req.body.offerString3,
+        offerbanner: '/banners/' + req.session.offerBanner,
+        comingSoon: '/banners/' + req.session.comingSoon,
+        productCarousel: '/banners/' + req.session.productCarousel,
+        page: req.body.page
     }
     await Banner.insertMany([data])
     res.redirect('/admin/banners')
 }
 
 
-module.exports = { couponsPage, newCoupon, deleteCoupon, updateCoupon, orderManagement, manageOrder, orderDetails, markAsread, salesData, monthly, Yearly, weekly , banners, addBanner}
+module.exports = { couponsPage, newCoupon, deleteCoupon, updateCoupon, orderManagement, manageOrder, orderDetails, markAsread, salesData, monthly, Yearly, weekly, banners, addBanner }

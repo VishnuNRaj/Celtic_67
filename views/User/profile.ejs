@@ -1,17 +1,22 @@
 <%- include('userNavbar') %>
-<link rel="stylesheet" href="/css/fontawesome.css">
+
+
+  <link rel="stylesheet" href="/css/fontawesome.css">
   <!-- ***** Header Area End ***** -->
 
-    <!-- Modal -->
-    <div class="modal fade" id="editModal" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel"
+  <!-- Modal -->
+  <div class="modal fade" id="editModal" tabindex="1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog custom-modal-dialog" style="margin-top: 200px; justify-content: center; ">
-      <div class="modal-content custom-modal-content" style="width: auto; height: 300px; background-image: url('/img/pexels-pixabay-459762.jpg'); background-size: cover; background-repeat: no-repeat;">
+      <div class="modal-content custom-modal-content"
+        style="width: auto; height: 300px; background-image: url('/img/pexels-pixabay-459762.jpg'); background-size: cover; background-repeat: no-repeat;">
         <div class="modal-body">
           <form action="/editProfile" method="post" onsubmit="return updateVerification()">
             <div class="updateProfile">
-              <input type="text" class="updateinput" value="<%= data.name %>" name="name" placeholder="Enter your name" id="namebox">
-              <input type="text" class="updateinput" name="username" value="<%= data.username %>" placeholder="Enter your username" id="usernamebox">
+              <input type="text" class="updateinput" value="<%= data.name %>" name="name" placeholder="Enter your name"
+                id="namebox">
+              <input type="text" class="updateinput" name="username" value="<%= data.username %>"
+                placeholder="Enter your username" id="usernamebox">
               <button class="updateButton" type="submit">Update</button>
               <p style="color: red; font-size: 15px; margin-top: 30px;" id="errorShow"></p>
             </div>
@@ -33,11 +38,13 @@
                 <div class="row">
                   <div class="col-lg-4">
                     <% if (data.image) { %>
-                      <img src="<%= data.image %>" style="height: 300px; width: 300;" class="rounded-circle image-fluid" alt="">
+                      <img src="<%= data.image %>" style="height: 300px; width: 300;" class="rounded-circle image-fluid"
+                        alt="">
                       <% } else { %>
                         <img src="/userProfile/default.png" class="rounded-circle image-fluid" alt="">
                         <% } %>
-                          <form action="/profilePic" method="post" enctype="multipart/form-data" onsubmit="cropAndSubmit()">
+                          <form action="/profilePic" method="post" enctype="multipart/form-data"
+                            onsubmit="cropAndSubmit()">
                             <div class="custom-file-upload">
                               <label for="file-upload" class="file-upload-label rounded-circle image-fluid">
                                 <i class="fa fa-plus" style="font-size: 20px;"></i>
@@ -66,178 +73,59 @@
                   </div>
                   <div class="col-lg-4 align-self-center">
                     <ul>
-                      <li>Games Downloaded <span><%= data.purchase %></span></li>
-                      <li>Wallet Balance <span><%= data.wallet %> INR</span></li>
-                      <li><center><div class="main-border-button"><a href='/orders'>Order History</a></div></center></li>
-                      <center><div class="main-border-button"><a href='/logout/?id=<%= data._id %>'>Logout</a></div></center>
+                      <li>Games Downloaded <span>
+                          <%= data.purchase %>
+                        </span></li>
+                      <li>Wallet Balance <span>
+                          <%= data.wallet %> INR
+                        </span></li>
+                      <li>
+                        <center>
+                          <div class="main-border-button"><a href='/orders'>Order History</a></div>
+                        </center>
+                      </li>
+                      <center>
+                        <div class="main-border-button"><a href='/logout/?id=<%= data._id %>'>Logout</a></div>
+                      </center>
                     </ul>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="clips">
-                      <div class="row">
-                        <div class="col-lg-12">
-                          <div class="heading-section">
-                            <h4><em>Your Most Popular</em> Clips</h4>
-                          </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6">
-                          <div class="item">
-                            <div class="thumb">
-                              <img src="/img/clip-01.jpg" alt="" style="border-radius: 23px;">
-                              <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i
-                                  class="fa fa-play"></i></a>
-                            </div>
-                            <div class="down-content">
-                              <h4>First Clip</h4>
-                              <span><i class="fa fa-eye"></i> 250</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6">
-                          <div class="item">
-                            <div class="thumb">
-                              <img src="/img/clip-02.jpg" alt="" style="border-radius: 23px;">
-                              <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i
-                                  class="fa fa-play"></i></a>
-                            </div>
-                            <div class="down-content">
-                              <h4>Second Clip</h4>
-                              <span><i class="fa fa-eye"></i> 183</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6">
-                          <div class="item">
-                            <div class="thumb">
-                              <img src="/img/clip-03.jpg" alt="" style="border-radius: 23px;">
-                              <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i
-                                  class="fa fa-play"></i></a>
-                            </div>
-                            <div class="down-content">
-                              <h4>Third Clip</h4>
-                              <span><i class="fa fa-eye"></i> 141</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6">
-                          <div class="item">
-                            <div class="thumb">
-                              <img src="/img/clip-04.jpg" alt="" style="border-radius: 23px;">
-                              <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i
-                                  class="fa fa-play"></i></a>
-                            </div>
-                            <div class="down-content">
-                              <h4>Fourth Clip</h4>
-                              <span><i class="fa fa-eye"></i> 91</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="main-button">
-                            <a href="#">Load More Clips</a>
-                          </div>
-                        </div>
+
+
+
+
+
+                <footer>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <p>Copyright © 2036.All rights reserved.
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- ***** Banner End ***** -->
-
-          <!-- ***** Gaming Library Start ***** -->
-          <div class="gaming-library profile-library">
-            <div class="col-lg-12">
-              <div class="heading-section">
-                <h4><em>Your Gaming</em> Library</h4>
-              </div>
-              <div class="item">
-                <ul>
-                  <li><img src="/img/game-01.jpg" alt="" class="templatemo-item"></li>
-                  <li>
-                    <h4>Dota 2</h4><span>Sandbox</span>
-                  </li>
-                  <li>
-                    <h4>Date Added</h4><span>24/08/2036</span>
-                  </li>
-                  <li>
-                    <h4>Hours Played</h4><span>634 H 22 Mins</span>
-                  </li>
-                  <li>
-                    <h4>Currently</h4><span>Downloaded</span>
-                  </li>
-                  <li>
-                    <div class="main-border-button border-no-active"><a href="#">Donwloaded</a></div>
-                  </li>
-                </ul>
-              </div>
-              <div class="item">
-                <ul>
-                  <li><img src="/img/game-02.jpg" alt="" class="templatemo-item"></li>
-                  <li>
-                    <h4>Fortnite</h4><span>Sandbox</span>
-                  </li>
-                  <li>
-                    <h4>Date Added</h4><span>22/06/2036</span>
-                  </li>
-                  <li>
-                    <h4>Hours Played</h4><span>745 H 22 Mins</span>
-                  </li>
-                  <li>
-                    <h4>Currently</h4><span>Downloaded</span>
-                  </li>
-                  <li>
-                    <div class="main-border-button border-no-active"><a href="#">Donwloaded</a></div>
-                  </li>
-                </ul>
-              </div>
-              <div class="item last-item">
-                <ul>
-                  <li><img src="/img/game-03.jpg" alt="" class="templatemo-item"></li>
-                  <li>
-                    <h4>CS-GO</h4><span>Sandbox</span>
-                  </li>
-                  <li>
-                    <h4>Date Added</h4><span>21/04/2022</span>
-                  </li>
-                  <li>
-                    <h4>Hours Played</h4><span>632 H 46 Mins</span>
-                  </li>
-                  <li>
-                    <h4>Currently</h4><span>Downloaded</span>
-                  </li>
-                  <li>
-                    <div class="main-border-button border-no-active"><a href="#">Donwloaded</a></div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <!-- ***** Gaming Library End ***** -->
-        </div>
-      </div>
-    </div>
-  </div>
+                </footer>
 
 
+                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                  integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                  crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.6/dist/umd/popper.min.js"
+                  integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+                  crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/js/bootstrap.min.js"
+                  integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+                  crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
+                <script src="/js/owl-carousel.js"></script>
+                <script src="/js/tabs.js"></script>
+                <script src="/js/popup.js"></script>
+                <script src="/js/custom.js"></script>
+                <script src="/js/gamesJs.js"></script>
 
 
+                </body>
 
-
-  <footer>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <p>Copyright © 2036.All rights reserved.
-        </div>
-      </div>
-    </div>
-  </footer>
-
-
-
-
-  <%- include('userFooter') %>
+                </html>
