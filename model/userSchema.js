@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     name: String,
@@ -22,12 +22,13 @@ const userSchema = new mongoose.Schema({
     image: String,
     coupons: {
         type: [String],
-        default: []
+        default:[]
     },
     wallet: {
         type: Number,
         default: 0
     },
 });
+
 
 module.exports = {userSchema}

@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs')
 const { log } = require('console')
-const { User, Products, Category, Banner } = require('../model/Mongoose')
+const { User, Products, Category, Banner, Coupon } = require('../model/Mongoose')
 const { sentOtp } = require('../model/Mailer')
-const { findUsingId, findUsingEmail, getData, inserter } = require('./commonFunctions')
+const { findUsingId, findUsingEmail, getData, inserter, findData } = require('./commonFunctions')
 
 const login = (req, res, next) => {
     try {
@@ -33,7 +33,6 @@ const login = (req, res, next) => {
 
 const userHome = async (req, res, next) => {
     try {
-        console.log(req.session.user);
         const featured = await getData(Products, { visible: true }, { _id: -1 }, 0, 4)
         const trending = await getData(Products, { visible: true }, { downloads: -1 }, 0, 4)
         const banners = await Banner.findOne({ page: 'home' })
