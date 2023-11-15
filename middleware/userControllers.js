@@ -337,7 +337,10 @@ const changePassword = async (req, res, next) => {
     try {
         let data = req.body
         let userData = await findUsingEmail(User, data.email)
-        if (bcrypt.compare(data.password, userData.password)) {
+        console.log(data.password)
+        let passTrue = await bcrypt.compare(data.password, userData.password)
+        console.log(passTrue)
+        if(passTrue === true ) {
             res.status(204).json({ status: true })
         } else {
             data.password = await bcrypt.hash(data.password, 10)
