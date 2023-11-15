@@ -157,13 +157,14 @@ const resendOtp = async (req, res, next) => {
 function otpNull(req, res, next) {
     try {
         setTimeout(() => {
-            req.session.otp = null;
             console.log('null aakee');
-        }, 120000)
+            req.session.otp = null;
+        }, 1000 * 2 * 60);
     } catch (e) {
-        res.redirect('/games')
+        res.redirect('/games');
     }
 }
+
 
 const loginVerify = async (req, res, next) => {
     try {
@@ -172,8 +173,10 @@ const loginVerify = async (req, res, next) => {
         if (!userData) {
             res.status(488).json({ status: false })
         } else {
-            let passTrue = bcrypt.compare(data.password, userData.password);
-            if (passTrue) {
+            const passTrue = await bcrypt.compare(data.password, userData.password);
+            console.log(passTrue);
+            console.log(userData);
+            if (passTrue === true) {
                 if (userData.status === true) {
                     req.session.otp = sentOtp(userData.email)
                     req.session.userInfo = userData
