@@ -1,14 +1,10 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
+mongoose.connect(process.env.MONGO || "").then(()=>{ 
+  console.log('Connected to MongoDB');
+}) 
 
-mongoose.connect(process.env.MONGO, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  ssl:true,
-  tlsAllowInvalidCertificates:true
-}).then(()=>{
-  console.log('Connected to Mongo DB');
-})
+
 
 const { userSchema } = require('./userSchema')
 const { productSchema } = require('./productSchema')
@@ -24,15 +20,19 @@ const getDate = require('./date')
 
 
 
-const User = mongoose.model('users', userSchema);
-const Admin = mongoose.model('admins', adminSchema);
-const Products = mongoose.model('products', productSchema);
-const Category = mongoose.model('categorys', categorySchema)
-const Wishlist = mongoose.model('wishlists', wishlistScehma)
-const Cart = mongoose.model('carts', cartSchema)
-const Coupon = mongoose.model('coupons', couponSchema)
-const Order = mongoose.model('orders', orderSchema)
-const Message = mongoose.model('messages', notificationSchema)
-const Banner = mongoose.model('banners', bannerSchema)
-
+const User = mongoose.model('users', userSchema, 'users');
+const Admin = mongoose.model('ams', adminSchema, 'ams');
+const Products = mongoose.model('products', productSchema, 'products');
+const Category = mongoose.model('categorys', categorySchema, 'categorys');
+const Wishlist = mongoose.model('wishlists', wishlistScehma, 'wishlists');
+const Cart = mongoose.model('carts', cartSchema, 'carts');
+const Coupon = mongoose.model('coupons', couponSchema, 'coupons');
+const Order = mongoose.model('orders', orderSchema, 'orders');
+const Message = mongoose.model('messages', notificationSchema, 'messages');
+const Banner = mongoose.model('banners', bannerSchema, 'banners');
+// async function getData() {
+//   const users = await Admin.find()
+//   console.log(users)
+// } 
+// getData()
 module.exports = { User, Admin, Products, Category, Cart, Wishlist, Coupon, Order, Message, Banner, getDate };

@@ -149,7 +149,7 @@ const orderDetails = async (req, res, next) => {
             }
             const user = await User.findById(order.userId)
             let coupon = await Coupon.findById(order.coupons)
-            res.render('admin/orderDetails', { Name: adminData.name, user, email: adminData.email, order, messages, canceltrue: (canceltrue) ? canceltrue : null, coupons: (coupon) ? coupon : null })
+            res.render('Admin/orderDetails', { Name: adminData.name, user, email: adminData.email, order, messages, canceltrue: (canceltrue) ? canceltrue : null, coupons: (coupon) ? coupon : null })
         } else {
             res.redirect('/admin/orders')
         }

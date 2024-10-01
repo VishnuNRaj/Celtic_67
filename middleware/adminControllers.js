@@ -77,7 +77,9 @@ function otpNull(req, res, next) {
 
 const adminVerification = async (req, res, next) => {
     let data = req.body
+    console.log(await Admin.find())
     let adminData = await Admin.findOne({ email: data.email })
+    console.log(adminData)
     if (adminData) {
         let passTrue = await bcrypt.compare(data.password, adminData.password)
         if (passTrue) {

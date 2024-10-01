@@ -7,7 +7,7 @@ const auth = require('../middleware/auth')
 const pdfs = require('../middleware/createPdf')
 const managements = require('../middleware/managements')
 const nocache = require('nocache');
-const { banner, afterBanner, bannerChange, bannerName, afterNewBanner } = require('../middleware/profilePicture');
+const { banner, afterBanner, bannerChange, afterNewBanner } = require('../middleware/profilePicture');
 router.use(nocache())
 
 router.get('/', middlewares.adminHome)

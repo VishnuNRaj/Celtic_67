@@ -223,7 +223,7 @@ const paymentSuccess = async (req, res, next) => {
         let userData = await findUsingId(User,userId)
         if (userData.status) {
             await findAndUpdate(Order,req.session.order._id, { $set: { paymentId: response.razorpay_payment_id }})
-            await findAndUpdate(User,{ $pull: { coupons: req.session.coupon._id } })
+            req.session.coupon && await findAndUpdate(User,{ $pull: { coupons: req.session.coupon._id } })
             await clear(req, res, next, productId, userId)
             res.status(200).json({ status: true })
         } else {

@@ -305,7 +305,7 @@ async function orderNow(userId, amount, productId, quantity, need) {
 
 async function orderSuccess(userId, productId, orderDetails) {
     var options = {
-        "key": 'rzp_test_yggMomd8DmZca4',
+        "key": 'rzp_test_CEPS9ITcn3ts5D',
         "amount": orderDetails.order.amount,
         "currency": "INR",
         "name": "End Game Gaming",

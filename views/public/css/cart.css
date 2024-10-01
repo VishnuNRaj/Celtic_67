@@ -28,29 +28,26 @@
     height: 100%;
     height: 60px;
     border-radius: 30px;
+    font-size: 16px;
+    color: white;
+    margin-bottom: 20px;
   }
 
   .optionsButton1 {
-    background: rgb(0, 155, 182);
+    background: rgb(221, 72, 72);
     border: 1px solid white;
-    font-size: 20px;
-    color: white;
     font-weight: 600;
   }
 
   .optionsButton2 {
-    background: rgb(3, 100, 3);
+    background: rgb(3, 116, 3);
     border: 1px solid white;
-    font-size: 20px;
-    color: white;
     font-weight: 600;
   }
 
   .optionsButton3 {
-    background: red;
+    background: rgb(221, 72, 72);
     border: 1px solid white;
-    font-size: 20px;
-    color: white;
     font-weight: 600;
   }
 
